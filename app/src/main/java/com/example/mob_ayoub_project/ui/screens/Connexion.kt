@@ -1,9 +1,10 @@
-package com.example.mob_ayoub_project
+package com.example.mob_ayoub_project.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
@@ -16,7 +17,13 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun StartConnection(modifier: Modifier = Modifier){
+fun StartConnection(
+    email : String,
+    emailError : String,
+    emailChange : (String) -> Unit = {},
+    onValidateClicked : () -> Unit,
+    modifier: Modifier = Modifier){
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -25,10 +32,21 @@ fun StartConnection(modifier: Modifier = Modifier){
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Connectez-vous", modifier = Modifier.padding(bottom = 16.dp))
-        // Ajoutez ici les champs de saisie pour le nom d'utilisateur et le mot de passe
-        // Exemple : TextField(value = ..., onValueChange = { /* ... */ })
-        Button(onClick = { /* Ajoutez ici la logique de connexion */ }) {
-            Text(text = "Connexion")
+        TextField(
+            value = email,
+            onValueChange =emailChange,
+        )
+        if(emailError.isNotEmpty()){
+            Text(text = emailError, modifier = Modifier.padding(bottom = 16.dp))
+
+        }
+
+        Button(
+            //the code for check if email is valid
+            onClick = { onValidateClicked() },
+            modifier = Modifier.align(Alignment.End)
+        ) {
+            Text(text = "Se connecter")
         }
 
     }
@@ -38,6 +56,6 @@ fun StartConnection(modifier: Modifier = Modifier){
 @Preview
 @Composable
 fun StartPreview(){
-    StartConnection();
+
 }
 

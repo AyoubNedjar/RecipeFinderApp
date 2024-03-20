@@ -1,5 +1,6 @@
 package com.example.mob_ayoub_project
 
+import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import com.example.mob_ayoub_project.data.DataPerson
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,5 +24,9 @@ class AyoubViewModel : ViewModel(){
     }
     fun resetEmail(){
         _uiState.value = DataPerson();
+    }
+
+    fun validateEmail(email : String) : Boolean {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 }
