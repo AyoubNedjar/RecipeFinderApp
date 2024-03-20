@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.update
 class AyoubViewModel : ViewModel(){
 
     private val _uiState = MutableStateFlow(DataPerson())
+
+    //make the data stream read-only
     val uiState: StateFlow<DataPerson> = _uiState.asStateFlow()
 
 
@@ -26,6 +28,12 @@ class AyoubViewModel : ViewModel(){
         _uiState.value = DataPerson();
     }
 
+    /**
+     * Receives a string and verifies if it is in email format.
+     *
+     * @param email The string to be validated as an email.
+     * @return True if the string is in email format, false otherwise.
+     */
     fun validateEmail(email : String) : Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }

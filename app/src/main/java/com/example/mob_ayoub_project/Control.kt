@@ -20,20 +20,36 @@ import com.example.mob_ayoub_project.ui.screens.He2bImage
 import com.example.mob_ayoub_project.ui.screens.StartConnection
 
 
+/**
+ * Enumération qui contient les identifiants des diffrentes routes
+ */
 enum class AyoubScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
     He2b(title = R.string.he2b)
 
 }
 
+
+/**
+ * Function responsible for creating the user interface of the application.
+ *
+ * @param viewModel Manages the application's data, contains the email.
+ * @param navController Manages navigation between the two destinations,
+ * the connection page and the He2b page.
+ */
 @Composable
 fun ControlApp(
     viewModel: AyoubViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ){
+
     val uiState by viewModel.uiState.collectAsState()
+    //collects values from view.uiState and wraps them in a state object
+
+    //stores the state of the variable and follow de updates
     var emailError by remember { mutableStateOf("") }
 
+    //container that uses composable for navigation
     NavHost(
         navController = navController,
         startDestination = AyoubScreen.Start.name,
@@ -42,24 +58,26 @@ fun ControlApp(
             .verticalScroll(rememberScrollState())
         ){
 
-            //the first screen
+            //the route for the first screen
             composable(route = AyoubScreen.Start.name){
                 StartConnection(
                     email = uiState.email,
                     emailChange = {viewModel.setEmail(it)},
                     emailError  = emailError,
                     onValidateClicked = {
+                        //code for check if email is valid
                         if (viewModel.validateEmail(uiState.email)) {
                             navController.navigate(AyoubScreen.He2b.name)
                         } else {
                             emailError = "Adresse e-mail invalide"
+                            viewModel.resetEmail()
                         }
                     },
 
                 )
             }
 
-            //the secoond screen
+            //the route for the second screen
             composable(route = AyoubScreen.He2b.name ){
                 He2bImage()
             }

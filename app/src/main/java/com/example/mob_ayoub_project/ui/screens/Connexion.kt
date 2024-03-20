@@ -11,18 +11,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-//C'est l'écran de connexion
-
-
-
-
+//login screen
 @Composable
 fun StartConnection(
     email : String,
     emailError : String,
     emailChange : (String) -> Unit = {},
-    onValidateClicked : () -> Unit,
-    modifier: Modifier = Modifier){
+    onValidateClicked : () -> Unit
+   ){
 
     Column(
         modifier = Modifier
@@ -42,7 +38,6 @@ fun StartConnection(
         }
 
         Button(
-            //the code for check if email is valid
             onClick = { onValidateClicked() },
             modifier = Modifier.align(Alignment.End)
         ) {
