@@ -17,8 +17,11 @@ fun StartConnection(
     email : String,
     emailError : String,
     emailChange : (String) -> Unit = {},
+    psw : String,
+    pswChange : (String) -> Unit = {},
     onValidateClicked : () -> Unit
    ){
+
 
     Column(
         modifier = Modifier
@@ -36,6 +39,11 @@ fun StartConnection(
             Text(text = emailError, modifier = Modifier.padding(bottom = 16.dp))
 
         }
+        
+        
+        TextField(
+            value = psw,
+            onValueChange = pswChange )
 
         Button(
             onClick = { onValidateClicked() },

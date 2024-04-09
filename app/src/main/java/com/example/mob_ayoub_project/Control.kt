@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -12,12 +13,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mob_ayoub_project.ui.screens.He2bImage
 import com.example.mob_ayoub_project.ui.screens.StartConnection
+import com.example.mob_ayoub_project.ui.screens.displayAboutUser
 
 
 /**
@@ -25,8 +28,8 @@ import com.example.mob_ayoub_project.ui.screens.StartConnection
  */
 enum class AyoubScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
-    He2b(title = R.string.he2b)
-
+    He2b(title = R.string.he2b),
+    About(title = R.string.about)
 }
 
 
@@ -49,21 +52,29 @@ fun ControlApp(
     //stores the state of the variable and follow de updates
     var emailError by remember { mutableStateOf("") }
 
-    //container that uses composable for navigation
-    NavHost(
-        navController = navController,
-        startDestination = AyoubScreen.Start.name,
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+
+        //container that uses composable for navigation
+        NavHost(
+            navController = navController,
+            startDestination = AyoubScreen.Start.name,
+            modifier = Modifier
+                .fillMaxSize(),
+
+
         ){
 
-            //the route for the first screen
+
+            //le chemin pour le premier écran
             composable(route = AyoubScreen.Start.name){
                 StartConnection(
                     email = uiState.email,
                     emailChange = {viewModel.setEmail(it)},
                     emailError  = emailError,
+                    psw = uiState.password,
+                    pswChange = {
+                        viewModel.setPasswd(it)
+                    },
+
                     onValidateClicked = {
                         //code for check if email is valid
                         if (viewModel.validateEmail(uiState.email)) {
@@ -74,15 +85,23 @@ fun ControlApp(
                         }
                     },
 
-                )
+                    )
             }
 
-            //the route for the second screen
+            //le chemin pour les infos de l'utilisateur
+            composable(route = AyoubScreen.About.name){
+                displayAboutUser()
+            }
+
+            //le chemin pour le deuxième écran
             composable(route = AyoubScreen.He2b.name ){
                 He2bImage()
             }
+        }
+}
 
-
-    }
-
+@Composable
+fun BottomNavigationBar(navController: NavController) {
+    // Afficher la barre de navigation ici
+    // Par exemple, vous pouvez utiliser BottomNavigation avec des éléments pour chaque destination
 }

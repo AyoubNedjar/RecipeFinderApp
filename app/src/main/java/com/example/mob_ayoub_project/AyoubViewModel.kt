@@ -24,6 +24,13 @@ class AyoubViewModel : ViewModel(){
             )
         }
     }
+    fun setPasswd(newPswd : String){
+        _uiState.update { currentState ->
+            currentState.copy(
+                password = newPswd
+            )
+        }
+    }
     fun resetEmail(){
         _uiState.value = DataPerson();
     }
