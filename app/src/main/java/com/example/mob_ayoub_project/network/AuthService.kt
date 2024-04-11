@@ -1,19 +1,22 @@
 package com.example.mob_ayoub_project.network
 
+import android.util.Log
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 object AuthService {
 
-    private const val baseURL = "https://dnsrivnxleeqdtbyhftv.supabase.co/"//ne changera jamais
-    val authClient : AuthHTTPCient
+    private const val baseURL = "https://dnsrivnxleeqdtbyhftv.supabase.co/"
 
-    init {
-        // create a converter JSON-> Kotlin
-        val jsonConverter = MoshiConverterFactory.create()
-        val retrofitBuilder : Retrofit.Builder = Retrofit.Builder()
-            .addConverterFactory(jsonConverter) .baseUrl(baseURL)
+    val authClient: AuthHTTPCient
 
-        val retrofit : Retrofit = retrofitBuilder.build()
-        authClient   = retrofit.create(AuthHTTPCient::class.java)
-    }
+       init{
+
+            val jsonConverter = MoshiConverterFactory.create()
+            val retrofitBuilder: Retrofit.Builder = Retrofit.Builder()
+                .addConverterFactory(jsonConverter).baseUrl(baseURL)
+
+            val retrofit: Retrofit = retrofitBuilder.build()
+            authClient = retrofit.create(AuthHTTPCient::class.java)
+
+        }
 }

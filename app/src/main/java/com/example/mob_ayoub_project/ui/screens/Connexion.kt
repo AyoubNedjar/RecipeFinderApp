@@ -10,19 +10,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mob_ayoub_project.AyoubViewModel
 
 //login screen
 @Composable
 fun StartConnection(
-    email : String,
-    emailError : String,
-    emailChange : (String) -> Unit = {},
-    psw : String,
-    pswChange : (String) -> Unit = {},
-    onValidateClicked : () -> Unit
-   ){
-
-
+    modelView: AyoubViewModel,
+    email: String,
+    emailError: String,
+    emailChange: (String) -> Unit = {},
+    psw: String,
+    pswChange: (String) -> Unit = {},
+    onValidateClicked: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -31,27 +32,54 @@ fun StartConnection(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Connectez-vous", modifier = Modifier.padding(bottom = 16.dp))
-        TextField(
-            value = email,
-            onValueChange =emailChange,
-        )
-        if(emailError.isNotEmpty()){
-            Text(text = emailError, modifier = Modifier.padding(bottom = 16.dp))
 
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "email",
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .weight(1f)
+            )
+            TextField(
+                value = email,
+                onValueChange = emailChange,
+                modifier = Modifier.weight(3f)
+            )
         }
-        
-        
-        TextField(
-            value = psw,
-            onValueChange = pswChange )
+
+        if (emailError.isNotEmpty()) {
+            Text(text = emailError, modifier = Modifier.padding(bottom = 16.dp))
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "password : ",
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .weight(1f)
+            )
+            TextField(
+                value = psw,
+                onValueChange = pswChange,
+                modifier = Modifier.weight(3f)
+            )
+        }
 
         Button(
-            onClick = { onValidateClicked() },
+            onClick = {
+                onValidateClicked()
+
+            },
             modifier = Modifier.align(Alignment.End)
         ) {
             Text(text = "Se connecter")
         }
-
     }
 }
 

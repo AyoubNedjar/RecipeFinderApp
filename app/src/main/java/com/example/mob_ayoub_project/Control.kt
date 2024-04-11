@@ -2,9 +2,12 @@ package com.example.mob_ayoub_project
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,7 +23,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.mob_ayoub_project.ui.screens.He2bImage
 import com.example.mob_ayoub_project.ui.screens.StartConnection
-import com.example.mob_ayoub_project.ui.screens.displayAboutUser
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
+import com.example.mob_ayoub_project.ui.screens.DisplayAboutUser
 
 
 /**
@@ -52,56 +60,101 @@ fun ControlApp(
     //stores the state of the variable and follow de updates
     var emailError by remember { mutableStateOf("") }
 
+    //stores de current Screen
+    var currentScreen by remember { mutableStateOf(AyoubScreen.He2b) }
+
+    Scaffold (
+        bottomBar = {
+            BottomNavigationBar(navController = navController, currentScreen)
+        }
+    ) {
 
         //container that uses composable for navigation
         NavHost(
             navController = navController,
             startDestination = AyoubScreen.Start.name,
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .padding(it)
 
-
-        ){
-
+            ) {
 
             //le chemin pour le premier écran
-            composable(route = AyoubScreen.Start.name){
+            composable(route = AyoubScreen.Start.name) {
+                currentScreen = AyoubScreen.Start
                 StartConnection(
+                    modelView = viewModel,
                     email = uiState.email,
-                    emailChange = {viewModel.setEmail(it)},
-                    emailError  = emailError,
+                    emailChange = { viewModel.setEmail(it) },
+                    emailError = emailError,
                     psw = uiState.password,
                     pswChange = {
                         viewModel.setPasswd(it)
                     },
-
                     onValidateClicked = {
                         //code for check if email is valid
-                        if (viewModel.validateEmail(uiState.email)) {
-                            navController.navigate(AyoubScreen.He2b.name)
-                        } else {
+                        if (!viewModel.validateEmail(uiState.email)) {
                             emailError = "Adresse e-mail invalide"
-                            viewModel.resetEmail()
+                            viewModel.resetAll()
+                        } else {
+                            //
+                            viewModel.fetchUserInfos()
+                            if (viewModel.fetchResult.value == AyoubViewModel.ConnectionResult.SUCCES) {
+                                navController.navigate(AyoubScreen.He2b.name)
+                            }else{
+                                emailError = "email ou mot de passe invalide"
+                                viewModel.resetAll()
+                            }
                         }
-                    },
 
-                    )
+                    }
+
+                )
             }
 
             //le chemin pour les infos de l'utilisateur
-            composable(route = AyoubScreen.About.name){
-                displayAboutUser()
+            composable(route = AyoubScreen.About.name) {
+                currentScreen = AyoubScreen.About
+                DisplayAboutUser()
             }
 
             //le chemin pour le deuxième écran
-            composable(route = AyoubScreen.He2b.name ){
+            composable(route = AyoubScreen.He2b.name) {
+                currentScreen = AyoubScreen.He2b
                 He2bImage()
             }
         }
+    }
 }
 
 @Composable
-fun BottomNavigationBar(navController: NavController) {
-    // Afficher la barre de navigation ici
-    // Par exemple, vous pouvez utiliser BottomNavigation avec des éléments pour chaque destination
+fun BottomNavigationBar(navController: NavHostController, currentScreen: AyoubScreen) {
+    BottomNavigation{
+        if (currentScreen != AyoubScreen.Start) {
+            BottomNavigationItem(
+                icon  ={
+                    Icon(
+                        imageVector = Icons.Filled.Home ,
+                        contentDescription = "Home"
+                    )
+                },
+                selected = currentScreen == AyoubScreen.He2b,
+                onClick = {
+                    navController.navigate(route = AyoubScreen.He2b.name)
+                }
+            )
+            BottomNavigationItem(
+                icon = {
+                    Icon(
+                        imageVector = Icons.Filled.Info,
+                        contentDescription = "About"
+                    )
+                },
+                selected = currentScreen == AyoubScreen.About,
+                onClick = {
+                    navController.navigate(AyoubScreen.About.name)
+                }
+            )
+        }
+    }
 }
