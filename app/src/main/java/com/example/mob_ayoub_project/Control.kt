@@ -3,11 +3,8 @@ package com.example.mob_ayoub_project
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -16,19 +13,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.mob_ayoub_project.ui.screens.He2bImage
-import com.example.mob_ayoub_project.ui.screens.StartConnection
+import com.example.mob_ayoub_project.ui.screens.login.He2bImage
+import com.example.mob_ayoub_project.ui.screens.login.StartConnection
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
-import com.example.mob_ayoub_project.ui.screens.DisplayAboutUser
+import com.example.mob_ayoub_project.data.Cuisine
+import com.example.mob_ayoub_project.models.AyoubViewModel
+import com.example.mob_ayoub_project.models.RecipeViewModel
+import com.example.mob_ayoub_project.ui.screens.login.DisplayAboutUser
+import com.example.mob_ayoub_project.ui.screens.recipes.SelectCuisineScreen
 
 
 /**
@@ -37,7 +37,8 @@ import com.example.mob_ayoub_project.ui.screens.DisplayAboutUser
 enum class AyoubScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
     He2b(title = R.string.he2b),
-    About(title = R.string.about)
+    About(title = R.string.about),
+    Cuisines(R.string.cuisines)
 }
 
 
@@ -50,18 +51,19 @@ enum class AyoubScreen(@StringRes val title: Int) {
  */
 @Composable
 fun ControlApp(
-    viewModel: AyoubViewModel = viewModel(),
+    loginViewModel: AyoubViewModel = viewModel(),
+    recipeViewModel : RecipeViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ){
 
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by loginViewModel.uiState.collectAsState()
     //collects values from view.uiState and wraps them in a state object
 
     //stores the state of the variable and follow de updates
     var emailError by remember { mutableStateOf("") }
 
     //stores de current Screen
-    var currentScreen by remember { mutableStateOf(AyoubScreen.He2b) }
+    var currentScreen by remember { mutableStateOf(AyoubScreen.Cuisines) }
 
     Scaffold (
         bottomBar = {
@@ -72,7 +74,7 @@ fun ControlApp(
         //container that uses composable for navigation
         NavHost(
             navController = navController,
-            startDestination = AyoubScreen.Start.name,
+            startDestination = AyoubScreen.Cuisines.name,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
@@ -83,27 +85,28 @@ fun ControlApp(
             composable(route = AyoubScreen.Start.name) {
                 currentScreen = AyoubScreen.Start
                 StartConnection(
-                    modelView = viewModel,
+                    modelView = loginViewModel,
                     email = uiState.email,
-                    emailChange = { viewModel.setEmail(it) },
+                    emailChange = { loginViewModel.setEmail(it) },
                     emailError = emailError,
                     psw = uiState.password,
                     pswChange = {
-                        viewModel.setPasswd(it)
+                        loginViewModel.setPasswd(it)
                     },
                     onValidateClicked = {
                         //code for check if email is valid
-                        if (!viewModel.validateEmail(uiState.email)) {
+                        if (!loginViewModel.validateEmail(uiState.email)) {
                             emailError = "Adresse e-mail invalide"
-                            viewModel.resetAll()
+                            loginViewModel.resetAll()
                         } else {
                             //
-                            viewModel.fetchUserInfos()
-                            if (viewModel.fetchResult.value == AyoubViewModel.ConnectionResult.SUCCES) {
-                                navController.navigate(AyoubScreen.He2b.name)
+                            loginViewModel.fetchUserInfos()
+                            if (loginViewModel.fetchResult.value == AyoubViewModel.ConnectionResult.SUCCES) {
+                               // navController.navigate(AyoubScreen.He2b.name)
+                                navController.navigate(AyoubScreen.Cuisines.name)
                             }else{
                                 emailError = "email ou mot de passe invalide"
-                                viewModel.resetAll()
+                                loginViewModel.resetAll()
                             }
                         }
 
@@ -122,6 +125,18 @@ fun ControlApp(
             composable(route = AyoubScreen.He2b.name) {
                 currentScreen = AyoubScreen.He2b
                 He2bImage()
+            }
+            
+            //le chemin pour les cuisines
+            composable(route = AyoubScreen.Cuisines.name) {
+                currentScreen = AyoubScreen.Cuisines
+                SelectCuisineScreen(
+                    cuisines = Cuisine.values().toList(),
+                    onSelectionChanged = {
+                        recipeViewModel.setCuisine(it)
+                        recipeViewModel.fetchRecipesFromCuisine()
+                    }
+                    )
             }
         }
     }

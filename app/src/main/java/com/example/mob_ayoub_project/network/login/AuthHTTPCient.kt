@@ -1,4 +1,4 @@
-package com.example.mob_ayoub_project.network
+package com.example.mob_ayoub_project.network.login
 
 import com.example.mob_ayoub_project.data.DataPerson
 import retrofit2.http.Body

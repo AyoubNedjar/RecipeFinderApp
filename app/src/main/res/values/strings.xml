@@ -2,4 +2,7 @@
     <string name="app_name">Mob_Ayoub_Project</string>
     <string name="he2b">After Connection</string>
     <string name="about">Infos_User</string>
+    <string name="cuisines">CuisinesRecipe</string>
+    <string name="allRecipe">allRecipe</string>
+    <string name="theRecipe">theRecipe</string>
 </resources>

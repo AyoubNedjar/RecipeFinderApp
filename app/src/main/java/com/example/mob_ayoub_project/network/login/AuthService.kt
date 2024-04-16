@@ -1,6 +1,5 @@
-package com.example.mob_ayoub_project.network
+package com.example.mob_ayoub_project.network.login
 
-import android.util.Log
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 object AuthService {
@@ -18,5 +17,5 @@ object AuthService {
             val retrofit: Retrofit = retrofitBuilder.build()
             authClient = retrofit.create(AuthHTTPCient::class.java)
 
-        }
+       }
 }

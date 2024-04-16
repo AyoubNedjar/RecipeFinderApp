@@ -1,4 +1,4 @@
-package com.example.mob_ayoub_project.ui.screens
+package com.example.mob_ayoub_project.ui.screens.login
 
 
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +15,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mob_ayoub_project.network.TokenResponse
 import com.example.mob_ayoub_project.ui.theme.Mob_Ayoub_ProjectTheme
 
 @Composable

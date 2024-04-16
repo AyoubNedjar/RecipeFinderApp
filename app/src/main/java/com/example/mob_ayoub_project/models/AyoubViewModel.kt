@@ -1,4 +1,4 @@
-package com.example.mob_ayoub_project
+package com.example.mob_ayoub_project.models
 
 import android.util.Log
 import android.util.Patterns
@@ -6,15 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mob_ayoub_project.data.DataPerson
-import com.example.mob_ayoub_project.network.AuthService
-import com.example.mob_ayoub_project.network.TokenResponse
+import com.example.mob_ayoub_project.network.login.AuthService
+import com.example.mob_ayoub_project.network.login.TokenResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import retrofit2.Response
 
 class AyoubViewModel : ViewModel(){
 
