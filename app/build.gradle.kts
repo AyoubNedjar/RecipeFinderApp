@@ -2,6 +2,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
+    //gérer les annotations pour la database
+    id ("kotlin-kapt")
 }
 
 android {
@@ -83,6 +85,16 @@ dependencies {
 
     //for Serialization
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+
+
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.6.0")
+   //implementation ("com.google.accompanist:accompanist-coil:<version>")
+
+    //room
+    implementation ("androidx.room:room-runtime:2.6.0")
+    kapt("androidx.room:room-compiler:2.6.0")
+    implementation ("androidx.room:room-ktx:2.6.0")
 
 
     testImplementation("junit:junit:4.13.2")

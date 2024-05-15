@@ -1,5 +1,6 @@
 package com.example.mob_ayoub_project
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -28,6 +29,8 @@ import com.example.mob_ayoub_project.data.Cuisine
 import com.example.mob_ayoub_project.models.AyoubViewModel
 import com.example.mob_ayoub_project.models.RecipeViewModel
 import com.example.mob_ayoub_project.ui.screens.login.DisplayAboutUser
+import com.example.mob_ayoub_project.ui.screens.recipes.AllRecipeFromCuisineScreen
+import com.example.mob_ayoub_project.ui.screens.recipes.DisplayRecipeChoosed
 import com.example.mob_ayoub_project.ui.screens.recipes.SelectCuisineScreen
 
 
@@ -38,7 +41,9 @@ enum class AyoubScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
     He2b(title = R.string.he2b),
     About(title = R.string.about),
-    Cuisines(R.string.cuisines)
+    Cuisines(R.string.cuisines),
+    AllRecipe(R.string.allRecipe),
+    RecipeChoosed(R.string.theRecipe)
 }
 
 
@@ -135,8 +140,29 @@ fun ControlApp(
                     onSelectionChanged = {
                         recipeViewModel.setCuisine(it)
                         recipeViewModel.fetchRecipesFromCuisine()
+                        navController.navigate(AyoubScreen.AllRecipe.name)
                     }
                     )
+            }
+            
+            composable(route = AyoubScreen.AllRecipe.name){
+                currentScreen = AyoubScreen.AllRecipe
+                Log.i("Résults of recipes", recipeViewModel.results.toString())
+                AllRecipeFromCuisineScreen(
+                    allRecipe = recipeViewModel.results.value,
+                    onRecipeChoosed = {
+                        recipeViewModel.setRecipeChoosed(it)
+                        recipeViewModel.fetchInfosFromRecipe()
+                        navController.navigate(AyoubScreen.RecipeChoosed.name)
+                    } )
+            }
+
+            composable(route=AyoubScreen.RecipeChoosed.name){
+                currentScreen = AyoubScreen.RecipeChoosed
+                recipeViewModel.resultsInfosFromOneRecipe.value?.let { infosRecipeExist ->
+                    DisplayRecipeChoosed(infosRecipeExist)
+                }
+
             }
         }
     }
