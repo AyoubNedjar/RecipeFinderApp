@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.mob_ayoub_project.data.Cuisine
 import com.example.mob_ayoub_project.data.InfosFromOneRecipe
 import com.example.mob_ayoub_project.data.Recipe
+import com.example.mob_ayoub_project.database.RecipeFavorite
 import com.example.mob_ayoub_project.network.Recipe.RecipeService
 import com.example.mob_ayoub_project.network.Recipe.RecipesResponse
 import kotlinx.coroutines.launch
@@ -25,8 +26,26 @@ class RecipeViewModel : ViewModel (){
 
     var resultsInfosFromOneRecipe = mutableStateOf<InfosFromOneRecipe?>(null)
 
+    var favoritesList : MutableState<List<RecipeFavorite>> = mutableStateOf(listOf())
 
 
+
+
+    init {
+        viewModelScope.launch {
+            favoritesList.value = Repository.getAllFavoritesRecipe()
+        }
+    }
+
+    fun addFavoriteInTheDatabase(recipe : InfosFromOneRecipe){
+        viewModelScope.launch {
+            Repository.insertFavoriteInDatabase(recipe)
+            //ici on a pa besoin de créer de nouvelle methode pour afficher
+            // et recup les données car on estime qu'elles se feront directement une fois
+            //qu'on aura inserer une nouvelle note
+            favoritesList.value = Repository.getAllFavoritesRecipe()
+        }
+    }
 
     fun setRecipeChoosed(newRecipe : Recipe){
         recipeChoosed.value = newRecipe
