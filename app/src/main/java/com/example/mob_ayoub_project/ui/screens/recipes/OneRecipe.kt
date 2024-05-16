@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -27,13 +28,17 @@ import com.example.mob_ayoub_project.data.Recipe
 
 @Composable
 fun DisplayRecipeChoosed(
-    recipe : InfosFromOneRecipe
+    recipe : InfosFromOneRecipe,
+    onButtonClicked : (InfosFromOneRecipe) -> Unit = {}
 ){
+
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(scrollState)
     ) {
         // Affichage de l'image de la recette
         recipe.image?.let { imageUrl ->
@@ -94,6 +99,12 @@ fun DisplayRecipeChoosed(
                 fontSize = 16.sp,
                 modifier = Modifier.padding(vertical = 16.dp)
             )
+        }
+
+        Button(onClick = {
+            onButtonClicked(recipe)
+        }) {
+            Text(text = "add Favorites")
         }
 
     }

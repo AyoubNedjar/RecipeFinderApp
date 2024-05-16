@@ -2,7 +2,11 @@ package com.example.mob_ayoub_project
 
 import android.util.Log
 import androidx.annotation.StringRes
+import androidx.compose.foundation.Image
+
+
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -23,13 +27,19 @@ import com.example.mob_ayoub_project.ui.screens.login.StartConnection
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.ui.res.painterResource
+import androidx.navigation.navigation
 import com.example.mob_ayoub_project.data.Cuisine
 import com.example.mob_ayoub_project.models.AyoubViewModel
 import com.example.mob_ayoub_project.models.RecipeViewModel
 import com.example.mob_ayoub_project.ui.screens.login.DisplayAboutUser
 import com.example.mob_ayoub_project.ui.screens.recipes.AllRecipeFromCuisineScreen
+import com.example.mob_ayoub_project.ui.screens.recipes.CreateRecipeScreen
+import com.example.mob_ayoub_project.ui.screens.recipes.DisplayFavoritesRecipe
 import com.example.mob_ayoub_project.ui.screens.recipes.DisplayRecipeChoosed
 import com.example.mob_ayoub_project.ui.screens.recipes.SelectCuisineScreen
 
@@ -43,7 +53,9 @@ enum class AyoubScreen(@StringRes val title: Int) {
     About(title = R.string.about),
     Cuisines(R.string.cuisines),
     AllRecipe(R.string.allRecipe),
-    RecipeChoosed(R.string.theRecipe)
+    RecipeChoosed(R.string.theRecipe),
+    Favorites(R.string.Favorites),
+    CreateRecipe(R.string.recipeCreated)
 }
 
 
@@ -68,13 +80,13 @@ fun ControlApp(
     var emailError by remember { mutableStateOf("") }
 
     //stores de current Screen
-    var currentScreen by remember { mutableStateOf(AyoubScreen.Cuisines) }
+    var currentScreen by remember { mutableStateOf(AyoubScreen.CreateRecipe) }
 
     Scaffold (
         bottomBar = {
             BottomNavigationBar(navController = navController, currentScreen)
         }
-    ) {
+    ) {paddingValues->
 
         //container that uses composable for navigation
         NavHost(
@@ -82,7 +94,7 @@ fun ControlApp(
             startDestination = AyoubScreen.Cuisines.name,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(paddingValues)
 
             ) {
 
@@ -144,7 +156,8 @@ fun ControlApp(
                     }
                     )
             }
-            
+
+            //chemin pour arriver a voir toutes les recettes d'une cuisine
             composable(route = AyoubScreen.AllRecipe.name){
                 currentScreen = AyoubScreen.AllRecipe
                 Log.i("Résults of recipes", recipeViewModel.results.toString())
@@ -157,11 +170,40 @@ fun ControlApp(
                     } )
             }
 
+            //chemin pour voir la recette selectionnée + possibilité d'ajouter aux favoris
             composable(route=AyoubScreen.RecipeChoosed.name){
                 currentScreen = AyoubScreen.RecipeChoosed
                 recipeViewModel.resultsInfosFromOneRecipe.value?.let { infosRecipeExist ->
-                    DisplayRecipeChoosed(infosRecipeExist)
+                    DisplayRecipeChoosed(
+                        infosRecipeExist,
+                        onButtonClicked = {theRecipeAddedInFavorits ->
+                            recipeViewModel.addFavoriteInTheDatabase(theRecipeAddedInFavorits)
+                            navController.navigate(AyoubScreen.Favorites.name)
+                        })
                 }
+
+            }
+
+            //chemin pour voir quelles sont les recettes favorites
+            composable(route=AyoubScreen.Favorites.name){
+                currentScreen = AyoubScreen.Favorites
+                DisplayFavoritesRecipe(
+                    favoritesList = recipeViewModel.favoritesList.value,
+                    contentPadding = paddingValues,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+            }
+
+            //chemin pour créer sa propre recette de cuisine 
+            composable(route=AyoubScreen.CreateRecipe.name){
+                currentScreen = AyoubScreen.CreateRecipe
+                CreateRecipeScreen(
+                    modifier = Modifier,
+                    onImageSelected = {uri->
+
+
+                    })
 
             }
         }
@@ -170,12 +212,16 @@ fun ControlApp(
 
 @Composable
 fun BottomNavigationBar(navController: NavHostController, currentScreen: AyoubScreen) {
+
     BottomNavigation{
-        if (currentScreen != AyoubScreen.Start) {
+
+        if (currentScreen != AyoubScreen.Start ){
+
+
             BottomNavigationItem(
-                icon  ={
+                icon = {
                     Icon(
-                        imageVector = Icons.Filled.Home ,
+                        imageVector = Icons.Filled.Home,
                         contentDescription = "Home"
                     )
                 },
@@ -184,6 +230,33 @@ fun BottomNavigationBar(navController: NavHostController, currentScreen: AyoubSc
                     navController.navigate(route = AyoubScreen.He2b.name)
                 }
             )
+
+            BottomNavigationItem(
+                icon = {
+                    Image(
+                        painter = painterResource(id = R.drawable.kitchen),
+                        contentDescription = "Cuisines"
+                    )
+                },
+                selected = currentScreen == AyoubScreen.Cuisines,
+                onClick = {
+                    navController.navigate(AyoubScreen.Cuisines.name)
+                }
+            )
+
+            BottomNavigationItem(//pour les favoris
+                icon = {
+                    Icon(
+                        imageVector = Icons.Filled.Favorite,
+                        contentDescription = "Favorite"
+                    )
+                },
+                selected = currentScreen == AyoubScreen.Favorites,
+                onClick = {
+                    navController.navigate(route = AyoubScreen.Favorites.name)
+                }
+            )
+
             BottomNavigationItem(
                 icon = {
                     Icon(
@@ -196,6 +269,21 @@ fun BottomNavigationBar(navController: NavHostController, currentScreen: AyoubSc
                     navController.navigate(AyoubScreen.About.name)
                 }
             )
+            BottomNavigationItem(
+                icon = {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Create Recipe"
+                    )
+                },
+                selected = currentScreen == AyoubScreen.CreateRecipe,
+                onClick = {
+                    navController.navigate(route = AyoubScreen.CreateRecipe.name)
+                }
+            )
         }
+
+
+
     }
 }

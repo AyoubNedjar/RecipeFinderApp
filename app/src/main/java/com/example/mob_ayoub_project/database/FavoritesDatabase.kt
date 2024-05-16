@@ -15,7 +15,7 @@ abstract class FavoritesDatabase () : RoomDatabase() {
 
     companion object {
         //le context est l état d une activité donc on peut lui passé en param un contexte
-        private const val DATABASE_NAME = "notes_db"
+        private const val DATABASE_NAME = "recipes_db"
         private var sInstance: FavoritesDatabase? = null
         fun getInstance(context: Context): FavoritesDatabase {
             if (sInstance == null) {
