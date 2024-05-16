@@ -19,5 +19,5 @@ interface RecipeFavoriteDao {
     suspend fun getAllRecipe(): List<RecipeFavorite>
 
     @Delete
-    suspend fun deleteRecipeFromFavorites(recipe : RecipeFavorite)
+    suspend fun removeFavorite(recipe : RecipeFavorite)
 }

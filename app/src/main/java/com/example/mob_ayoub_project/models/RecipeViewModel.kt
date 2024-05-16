@@ -46,6 +46,15 @@ class RecipeViewModel : ViewModel (){
             favoritesList.value = Repository.getAllFavoritesRecipe()
         }
     }
+    fun deleteFavoriteFromTheDatabase(recipe : RecipeFavorite){
+        viewModelScope.launch {
+            Repository.removeFavoriteFromDatabase(recipe)
+            //ici on a pa besoin de créer de nouvelle methode pour afficher
+            // et recup les données car on estime qu'elles se feront directement une fois
+            //qu'on aura inserer une nouvelle note
+            favoritesList.value = Repository.getAllFavoritesRecipe()
+        }
+    }
 
     fun setRecipeChoosed(newRecipe : Recipe){
         recipeChoosed.value = newRecipe

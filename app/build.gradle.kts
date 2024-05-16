@@ -97,7 +97,7 @@ dependencies {
     implementation ("androidx.room:room-ktx:2.6.0")
 
     //pour l importation d'une image
-    implementation ("com.google.accompanist:accompanist-coil:0.18.0")
+    //implementation ("com.google.accompanist:accompanist-coil:0.18.0")
 
 
 

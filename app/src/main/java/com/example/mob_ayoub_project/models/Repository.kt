@@ -35,13 +35,11 @@ object Repository {
     }
 
 
-    /*suspend fun deleteFavoriteInDatabase(){
+    suspend fun removeFavoriteFromDatabase(recipe : RecipeFavorite){
         database?.let {thedatabase ->
-            val newRecipe = RecipeFavorite(0, recipe.image, recipe.title, recipe.veryHealthy,
-                recipe.summary, recipe.instructions, recipe.extendedIngredients)
 
-            thedatabase.recipeFavoritesDao().addNewRecipe(newRecipe)
+            thedatabase.recipeFavoritesDao().removeFavorite(recipe)
 
         }
-    }*/
+    }
 }

@@ -190,7 +190,11 @@ fun ControlApp(
                 DisplayFavoritesRecipe(
                     favoritesList = recipeViewModel.favoritesList.value,
                     contentPadding = paddingValues,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    onSelectionDeleted = {theRecipeToDelete->
+                        recipeViewModel.deleteFavoriteFromTheDatabase(theRecipeToDelete)
+
+                    }
                 )
 
             }
@@ -200,8 +204,8 @@ fun ControlApp(
                 currentScreen = AyoubScreen.CreateRecipe
                 CreateRecipeScreen(
                     modifier = Modifier,
-                    onImageSelected = {uri->
-
+                    onButtonClicked = {theRecipeCreated ->
+                        recipeViewModel.addFavoriteInTheDatabase(theRecipeCreated)
 
                     })
 
