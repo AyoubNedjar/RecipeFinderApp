@@ -8,5 +8,5 @@ data class InfosFromOneRecipe(
     val veryHealthy : Boolean? = null,
     val summary :String? = null,
     val instructions : String? = null,
-    val extendedIngredients : List<Ingredients>
+    val extendedIngredients : List<Ingredients> = listOf()//pour le convertisseur
 )

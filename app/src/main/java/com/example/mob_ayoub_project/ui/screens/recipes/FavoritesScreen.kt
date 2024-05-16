@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,11 +29,13 @@ import com.example.mob_ayoub_project.database.RecipeFavorite
 
 
 @Composable
-fun DisplayFavoritesRecipe(favoritesList : List<RecipeFavorite>){
+fun DisplayFavoritesRecipe(favoritesList : List<RecipeFavorite>,
+                           contentPadding: PaddingValues,
+                           modifier : Modifier){
 
-    LazyColumn() {
-        items(items = favoritesList) {
-
+    LazyColumn(modifier = modifier, contentPadding = contentPadding) {
+        items(items = favoritesList) {theRecipeFavorite->
+            ColumnItem2(modifier, theRecipeFavorite)
         }
     }
 }
@@ -39,7 +43,7 @@ fun DisplayFavoritesRecipe(favoritesList : List<RecipeFavorite>){
 
 //TODO rajouter une option pour supprimer avec une image de poubelle
 @Composable
-fun ColumnItem2(modifier: Modifier, recipe: RecipeFavorite){
+fun ColumnItem2(modifier: Modifier = Modifier, recipe: RecipeFavorite){
     Card(
         modifier
             .padding(10.dp)
@@ -58,13 +62,17 @@ fun ColumnItem2(modifier: Modifier, recipe: RecipeFavorite){
 //            contentAlignment = Alignment.Center
         )
         {
-            AsyncImage(
-                model = recipe.image,
-                contentDescription = "recipe picture",
-                modifier = Modifier
-                    .size(90.dp)
-            )
-            Column() {
+
+            Row {
+                recipe.image?.let {
+                    AsyncImage(
+                        model = recipe.image,
+                        contentDescription = "favorite picture",
+                        modifier = Modifier
+                            .size(90.dp)
+                    )
+                }
+
                 recipe.title?.let {
                     Text(
                         text = it,
@@ -72,7 +80,6 @@ fun ColumnItem2(modifier: Modifier, recipe: RecipeFavorite){
                         fontWeight = FontWeight.Bold
                     )
                 }
-
             }
 
         }
