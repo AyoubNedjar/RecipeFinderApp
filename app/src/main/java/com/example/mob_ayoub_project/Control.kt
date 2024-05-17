@@ -26,11 +26,16 @@ import com.example.mob_ayoub_project.ui.screens.login.He2bImage
 import com.example.mob_ayoub_project.ui.screens.login.StartConnection
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.IconButton
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.Text
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.navigation
 import com.example.mob_ayoub_project.data.Cuisine
@@ -83,6 +88,26 @@ fun ControlApp(
     var currentScreen by remember { mutableStateOf(AyoubScreen.CreateRecipe) }
 
     Scaffold (
+
+        topBar = {
+                 if(currentScreen != AyoubScreen.Start
+                     && currentScreen != AyoubScreen.Favorites
+                     && currentScreen != AyoubScreen.He2b
+                     && currentScreen != AyoubScreen.About
+                     && currentScreen != AyoubScreen.Cuisines){
+                     TopAppBar (
+                         title = {Text(text = "App Title")},
+                         navigationIcon = {
+                             IconButton(onClick = { navController.popBackStack() }) {
+                                 Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                     contentDescription = "back")
+                                 
+                             }
+                         }
+                     )
+
+                 }
+        },
         bottomBar = {
             BottomNavigationBar(navController = navController, currentScreen)
         }

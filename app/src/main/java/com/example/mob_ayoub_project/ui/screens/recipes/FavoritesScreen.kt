@@ -115,11 +115,13 @@ fun ColumnItem2(modifier: Modifier = Modifier, recipe: RecipeFavorite, onSelecti
                 Icon(
                     imageVector = Icons.Filled.Delete,
                     contentDescription = "suppression des favoris",
+                    tint = Color.Red,
                     modifier = Modifier
                         .size(24.dp)
                         .clickable {
                             onSelectionDeleted(recipe)
                         }
+
                 )
             }
 
