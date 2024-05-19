@@ -7,4 +7,5 @@
     <string name="theRecipe">theRecipe</string>
     <string name="Favorites">theFavorites</string>
     <string name="recipeCreated">CreateRecipe</string>
+    <string name="recipeChoosedFromFavorits">recipeChoosedFromFavorits</string>
 </resources>

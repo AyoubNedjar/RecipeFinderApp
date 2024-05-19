@@ -1,23 +1,37 @@
 package com.example.mob_ayoub_project.ui.screens.recipes
 
+import android.text.Html
+import android.text.Spanned
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role.Companion.Image
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
@@ -29,7 +43,7 @@ import com.example.mob_ayoub_project.data.Recipe
 @Composable
 fun DisplayRecipeChoosed(
     recipe : InfosFromOneRecipe,
-    onButtonClicked : (InfosFromOneRecipe) -> Unit = {}
+    onButtonAddClicked : (InfosFromOneRecipe) -> Unit = {}
 ){
 
     val scrollState = rememberScrollState()
@@ -63,6 +77,12 @@ fun DisplayRecipeChoosed(
             )
         }
 
+
+        Text(text = "Santé",
+            style = TextStyle(
+                textDecoration = TextDecoration.Underline,
+                fontSize = 20.sp)
+        )
         // Affichage de l'indicateur de santé
         recipe.veryHealthy?.let { isHealthy ->
             val healthIndicator = if (isHealthy) "Sain" else "Pas très sain"
@@ -74,15 +94,21 @@ fun DisplayRecipeChoosed(
             )
         }
 
+        Text(text = "Résumé",
+            style = TextStyle(
+                textDecoration = TextDecoration.Underline,
+                fontSize = 20.sp)
+        )
         // Affichage du résumé de la recette
         recipe.summary?.let { summary ->
-            Text(
-                text = summary,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+            HtmlText(html = summary.toString().trimIndent())
         }
-
+        Spacer(modifier = Modifier.height(15.dp))
+        Text(text = "Ingredients",
+            style = TextStyle(
+                textDecoration = TextDecoration.Underline,
+                fontSize = 20.sp)
+            )
         // Affichage des ingrédients
         recipe.extendedIngredients.forEach { ingredient ->
             Text(
@@ -91,23 +117,69 @@ fun DisplayRecipeChoosed(
                 modifier = Modifier.padding(bottom = 4.dp)
             )
         }
+        Spacer(modifier = Modifier.height(15.dp))
 
+        Text(text = "Instructions",
+            style = TextStyle(
+                textDecoration = TextDecoration.Underline,
+                fontSize = 20.sp)
+        )
         // Affichage des instructions
         recipe.instructions?.let { instructions ->
-            Text(
-                text = instructions,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(vertical = 16.dp)
-            )
+            HtmlText(html = instructions.toString().trimIndent())
         }
-
+        Spacer(modifier = Modifier.height(30.dp))
         Button(onClick = {
-            onButtonClicked(recipe)
-        }) {
+            onButtonAddClicked(recipe)
+        },
+            modifier = Modifier.align(Alignment.End)) {
             Text(text = "add Favorites")
         }
 
     }
 
 
+}
+
+
+@Composable
+fun HtmlText(html: String) {
+    val spanned = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
+    val annotatedString = spanned.toAnnotatedString()
+
+    Text(
+        text = annotatedString,
+        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
+    )
+}
+
+fun Spanned.toAnnotatedString(): AnnotatedString {
+    return buildAnnotatedString {
+        append(this@toAnnotatedString.toString())
+        this@toAnnotatedString.getSpans(0, this@toAnnotatedString.length, Any::class.java).forEach { span ->
+            val start = this@toAnnotatedString.getSpanStart(span)
+            val end = this@toAnnotatedString.getSpanEnd(span)
+            val flags = this@toAnnotatedString.getSpanFlags(span)
+
+            when (span) {
+                is android.text.style.StyleSpan -> {
+                    when (span.style) {
+                        android.graphics.Typeface.BOLD -> {
+                            addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, end)
+                        }
+                        android.graphics.Typeface.ITALIC -> {
+                            addStyle(SpanStyle(fontStyle = FontStyle.Italic), start, end)
+                        }
+                    }
+                }
+                is android.text.style.URLSpan -> {
+                    addStringAnnotation("URL", span.url, start, end)
+                    withStyle(style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)) {
+                        append(this@toAnnotatedString.subSequence(start, end))
+                    }
+                }
+                // Ajoutez d'autres types de span si nécessaire
+            }
+        }
+    }
 }

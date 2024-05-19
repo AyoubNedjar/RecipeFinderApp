@@ -20,4 +20,7 @@ class Converters {//on veut transformer la liste d'ingredients en formats json
     fun toIngredientsList(ingredientsString: String?): List<Ingredients>? {
         return ingredientsString?.let { adapter.fromJson(it) }
     }
+
+
+
 }

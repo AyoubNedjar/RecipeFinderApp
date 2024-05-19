@@ -1,19 +1,18 @@
 package com.example.mob_ayoub_project.ui.screens.recipes
 
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.util.Log
-
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
@@ -27,11 +26,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import coil.compose.rememberAsyncImagePainter
 import com.example.mob_ayoub_project.data.InfosFromOneRecipe
 import com.example.mob_ayoub_project.data.Ingredients
 import com.example.mob_ayoub_project.ui.theme.Mob_Ayoub_ProjectTheme
@@ -54,14 +56,22 @@ fun CreateRecipeScreen(
         var ingredientValues by remember { mutableStateOf(List(7){Ingredients("")}) }
         var veryHealthy by remember { mutableStateOf(true) }
 
-
+        val imageUrl = "https://img-3.journaldesfemmes.fr/mrK-0E6Jw7lGJUv9Y0mpK5yfCMg=/1500x/smart/0a6c4b8084be4b9d91265bbe65a5ba93/ccmcms-jdf/11437802.png"
 
         Column(
             modifier = modifier.padding(16.dp).verticalScroll(scrollable),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-
+            Image(
+                painter = rememberAsyncImagePainter(model = imageUrl),
+                contentDescription = "Recipe Image",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clip(shape = RoundedCornerShape(8.dp)),
+                contentScale = ContentScale.Crop
+            )
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -126,16 +136,20 @@ fun CreateRecipeScreen(
 
             }
 
-            val recipe = InfosFromOneRecipe("",
+            val recipe = InfosFromOneRecipe(
+                imageUrl,
                 recipeName,
                 veryHealthy,
                 summary,
                 instructions,
                 ingredientValues
             )
-            Button(onClick = {
-                onButtonClicked(recipe)
-            }) {
+            Button(
+                onClick = {
+                    onButtonClicked(recipe)
+                          },
+                modifier= Modifier.align(Alignment.End)
+                ) {
                 Text(text = "add Favorites")
             }
 
@@ -148,7 +162,6 @@ fun LabeledTextField(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),

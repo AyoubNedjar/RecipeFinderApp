@@ -31,14 +31,13 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.Text
 import androidx.compose.ui.res.painterResource
-import androidx.navigation.navigation
 import com.example.mob_ayoub_project.data.Cuisine
+import com.example.mob_ayoub_project.data.InfosFromOneRecipe
+import com.example.mob_ayoub_project.data.Ingredients
 import com.example.mob_ayoub_project.models.AyoubViewModel
 import com.example.mob_ayoub_project.models.RecipeViewModel
 import com.example.mob_ayoub_project.ui.screens.login.DisplayAboutUser
@@ -47,6 +46,7 @@ import com.example.mob_ayoub_project.ui.screens.recipes.CreateRecipeScreen
 import com.example.mob_ayoub_project.ui.screens.recipes.DisplayFavoritesRecipe
 import com.example.mob_ayoub_project.ui.screens.recipes.DisplayRecipeChoosed
 import com.example.mob_ayoub_project.ui.screens.recipes.SelectCuisineScreen
+import java.net.URLEncoder
 
 
 /**
@@ -60,7 +60,8 @@ enum class AyoubScreen(@StringRes val title: Int) {
     AllRecipe(R.string.allRecipe),
     RecipeChoosed(R.string.theRecipe),
     Favorites(R.string.Favorites),
-    CreateRecipe(R.string.recipeCreated)
+    CreateRecipe(R.string.recipeCreated),
+    RecipeChoosedFromFavorits(R.string.recipeChoosedFromFavorits)
 }
 
 
@@ -86,6 +87,8 @@ fun ControlApp(
 
     //stores de current Screen
     var currentScreen by remember { mutableStateOf(AyoubScreen.CreateRecipe) }
+
+    var recipeChoosedFromFavorites  by remember { mutableStateOf(InfosFromOneRecipe()) }
 
     Scaffold (
 
@@ -196,14 +199,17 @@ fun ControlApp(
             }
 
             //chemin pour voir la recette selectionnée + possibilité d'ajouter aux favoris
+
             composable(route=AyoubScreen.RecipeChoosed.name){
+
                 currentScreen = AyoubScreen.RecipeChoosed
                 recipeViewModel.resultsInfosFromOneRecipe.value?.let { infosRecipeExist ->
                     DisplayRecipeChoosed(
                         infosRecipeExist,
-                        onButtonClicked = {theRecipeAddedInFavorits ->
+                        onButtonAddClicked = {theRecipeAddedInFavorits ->
                             recipeViewModel.addFavoriteInTheDatabase(theRecipeAddedInFavorits)
                             navController.navigate(AyoubScreen.Favorites.name)
+
                         })
                 }
 
@@ -212,16 +218,35 @@ fun ControlApp(
             //chemin pour voir quelles sont les recettes favorites
             composable(route=AyoubScreen.Favorites.name){
                 currentScreen = AyoubScreen.Favorites
+
                 DisplayFavoritesRecipe(
                     favoritesList = recipeViewModel.favoritesList.value,
                     contentPadding = paddingValues,
                     modifier = Modifier.fillMaxWidth(),
-                    onSelectionDeleted = {theRecipeToDelete->
+                    onSelectionDeleted = { theRecipeToDelete->
                         recipeViewModel.deleteFavoriteFromTheDatabase(theRecipeToDelete)
+                    },
+                    onRecipeClickable = {
+                        recipeClicked->
+                        recipeChoosedFromFavorites = InfosFromOneRecipe(
+                            image = recipeClicked.image,
+                            title = recipeClicked.title,
+                            veryHealthy = recipeClicked.veryHealthy,
+                            summary = recipeClicked.summary,
+                            instructions =recipeClicked.instructions,
+                            extendedIngredients = recipeClicked.extendedIngredients // Vous pouvez ajouter les ingrédients si nécessaire
+                        )
 
+                        navController.navigate(AyoubScreen.RecipeChoosedFromFavorits.name)
                     }
+
                 )
 
+            }
+            composable(route =AyoubScreen.RecipeChoosedFromFavorits.name){
+                currentScreen = AyoubScreen.RecipeChoosedFromFavorits
+                Log.i("RECIPE_FAVORITS", recipeChoosedFromFavorites.toString())
+                DisplayRecipeChoosed(recipe = recipeChoosedFromFavorites)
             }
 
             //chemin pour créer sa propre recette de cuisine 
@@ -231,7 +256,7 @@ fun ControlApp(
                     modifier = Modifier,
                     onButtonClicked = {theRecipeCreated ->
                         recipeViewModel.addFavoriteInTheDatabase(theRecipeCreated)
-
+                        navController.navigate(AyoubScreen.Favorites.name)
                     })
 
             }

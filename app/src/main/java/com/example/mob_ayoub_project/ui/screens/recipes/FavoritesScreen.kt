@@ -42,41 +42,44 @@ import com.example.mob_ayoub_project.database.RecipeFavorite
 fun DisplayFavoritesRecipe(favoritesList : List<RecipeFavorite>,
                            contentPadding: PaddingValues,
                            onSelectionDeleted : (RecipeFavorite) -> Unit,
+                           onRecipeClickable: (RecipeFavorite) -> Unit,
                            modifier : Modifier,){
 
     if (favoritesList.size==0){
-
         Column(
             modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally ,
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
-            Text(text = "Vous n'avez aucun favoris ", fontWeight = FontWeight.Bold,
-                style = TextStyle(fontSize = 24.sp))
+            Text(text = "Vous n'avez aucun favoris ",
+                fontWeight = FontWeight.Bold,
+                style = TextStyle(fontSize = 24.sp)
+            )
         }
     }else{
         LazyColumn(modifier = modifier, contentPadding = contentPadding) {
             items(items = favoritesList) {theRecipeFavorite->
-                ColumnItem2(modifier, theRecipeFavorite, onSelectionDeleted)
+                ColumnItem2(modifier, theRecipeFavorite, onSelectionDeleted, onRecipeClickable)
             }
         }
     }
-
 }
 
 
 //TODO rajouter une option pour supprimer avec une image de poubelle
 
 @Composable
-fun ColumnItem2(modifier: Modifier = Modifier, recipe: RecipeFavorite, onSelectionDeleted: (RecipeFavorite) -> Unit){
-    
+fun ColumnItem2(modifier: Modifier = Modifier, recipe: RecipeFavorite, onSelectionDeleted: (RecipeFavorite) -> Unit,onRecipeClickable: (RecipeFavorite) -> Unit ){
+
     Card(
         modifier
             .padding(10.dp)
             .fillMaxWidth()
             .wrapContentHeight()
-            .aspectRatio(3f),
+            .aspectRatio(3f)
+            .clickable {
+                onRecipeClickable(recipe)
+            },
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         ),

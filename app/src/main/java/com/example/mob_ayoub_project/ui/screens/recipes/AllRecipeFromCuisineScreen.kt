@@ -29,8 +29,6 @@ import coil.compose.AsyncImage
 import com.example.mob_ayoub_project.data.Cuisine
 import com.example.mob_ayoub_project.data.Recipe
 import com.example.mob_ayoub_project.network.Recipe.RecipesResponse
-
-
 @Composable
 fun AllRecipeFromCuisineScreen(
     modifier: Modifier = Modifier,
@@ -46,13 +44,11 @@ fun AllRecipeFromCuisineScreen(
                 recipe = recipe,
                 onClick = {
                     Log.i("Recete clickée", recipe.toString())
-                    onRecipeChoosed(recipe)})
+                    onRecipeChoosed(recipe)
+                })
         }
     }
-
 }
-
-
 @Composable
 fun ColumnItem(modifier: Modifier, recipe: Recipe, onClick  :() -> Unit) {
     Card(
@@ -74,7 +70,6 @@ fun ColumnItem(modifier: Modifier, recipe: Recipe, onClick  :() -> Unit) {
 
         )
         {
-
             Row {
                 AsyncImage(
                     model = recipe.image,
@@ -84,15 +79,7 @@ fun ColumnItem(modifier: Modifier, recipe: Recipe, onClick  :() -> Unit) {
                 )
 
                 Text(text = recipe.title, fontSize = 28.sp, fontWeight = FontWeight.Bold)
-
             }
-
-
         }
     }
 }
-
-
-/*fun Pre(){
-    AllRecipeFromCuisineScreen(allRecipe = )
-}*/
