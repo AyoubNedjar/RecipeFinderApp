@@ -96,7 +96,7 @@ fun ControlApp(
                      && currentScreen != AyoubScreen.About
                      && currentScreen != AyoubScreen.Cuisines){
                      TopAppBar (
-                         title = {Text(text = "App Title")},
+                         title = {},
                          navigationIcon = {
                              IconButton(onClick = { navController.popBackStack() }) {
                                  Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack,
