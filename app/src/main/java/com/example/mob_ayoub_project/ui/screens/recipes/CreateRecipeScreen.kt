@@ -169,7 +169,7 @@ fun LabeledTextField(
     ) {
         Text(
             text = label,
-            modifier = Modifier.width(120.dp) // Adjust the width as needed
+            modifier = Modifier.width(120.dp)
         )
         TextField(
             value = value,
@@ -179,28 +179,5 @@ fun LabeledTextField(
     }
 }
 
-/*val context = LocalContext.current
-   val activityResultLauncher = rememberLauncherForActivityResult(
-       contract = ActivityResultContracts.GetContent(),
-       onResult = { uri: Uri? ->
-           uri?.let { onImageSelected(it) }
-       }
-   )*/
-/*Button(
-           onClick = {
-               if (ContextCompat.checkSelfPermission(
-                       context,
-                       android.Manifest.permission.READ_EXTERNAL_STORAGE
-                   ) == PackageManager.PERMISSION_GRANTED
-               ) {
-                   // Ouvrir la galerie d'images pour sélectionner une photo
-                   activityResultLauncher.launch("image/*")
-               }
-           }
-       ) {
-           Text("Importer une photo")
-       }
 
-        */
-        */
 

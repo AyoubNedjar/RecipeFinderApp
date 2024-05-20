@@ -1,6 +1,5 @@
 package com.example.mob_ayoub_project.data
 
-import kotlinx.serialization.Serializable
 
 data class InfosFromOneRecipe(
     val image: String? = null,
@@ -8,5 +7,5 @@ data class InfosFromOneRecipe(
     val veryHealthy: Boolean? = null,
     val summary:String? = null,
     val instructions: String? = null,
-    val extendedIngredients: List<Ingredients> = listOf()//pour le convertisseur
+    val extendedIngredients: List<Ingredients> = listOf()
 )

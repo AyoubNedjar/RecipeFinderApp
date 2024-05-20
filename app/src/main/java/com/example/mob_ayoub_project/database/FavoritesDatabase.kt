@@ -11,10 +11,23 @@ import androidx.room.TypeConverters
 @TypeConverters(Converters::class)
 abstract class FavoritesDatabase () : RoomDatabase() {
 
+
+    /*
+    Determines which DAO to use.
+    */
     abstract fun recipeFavoritesDao():RecipeFavoriteDao
 
+
+    /*
+    Defines the initialization code of the database,
+    The static variable `sInstance` will hold a reference to the unique instance of `NoteDatabase`.
+    The `getInstance` function checks if an instance already exists.
+     If it doesn't, it will create a new one.
+     (Singleton Pattern)
+    */
     companion object {
-        //le context est l état d une activité donc on peut lui passé en param un contexte
+        // The context represents the state of an activity,
+        // so we can pass it as a parameter to a function.
         private const val DATABASE_NAME = "recipes_db"
         private var sInstance: FavoritesDatabase? = null
         fun getInstance(context: Context): FavoritesDatabase {

@@ -17,11 +17,18 @@ interface RecipeHTTPClient {
     @Headers(
         "Content-Type: application/json",
     )
+
+    /*
+    Search the recipes from cuisine
+     */
     @GET("recipes/complexSearch/")
     suspend fun chooseCuisine(
         @Query("cuisine") cuisine: String,
         @Query("apiKey") apiKey : String): RecipesResponse
 
+    /*
+    Search informations of recipe from the id
+     */
     @GET("recipes/{recipeId}/information")
     suspend fun infosForOneRecipe(
         @Path("recipeId") recipeId: Int,

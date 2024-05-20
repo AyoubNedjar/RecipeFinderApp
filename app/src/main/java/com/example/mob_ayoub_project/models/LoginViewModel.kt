@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
-class AyoubViewModel : ViewModel(){
+class LoginViewModel : ViewModel(){
 
     private val _uiState = MutableStateFlow(DataPerson())
 
@@ -24,7 +24,9 @@ class AyoubViewModel : ViewModel(){
 
     var access_token: TokenResponse = TokenResponse()
 
-    val fetchResult = mutableStateOf(ConnectionResult.UNINITIALIZED)
+
+    val _fetchResult = MutableStateFlow(ConnectionResult.UNINITIALIZED)
+    val fetchResult: StateFlow<ConnectionResult> = _fetchResult.asStateFlow()
     enum class ConnectionResult {
         SUCCES, ERROR, UNINITIALIZED;
     }
@@ -34,28 +36,33 @@ class AyoubViewModel : ViewModel(){
 
             try {
 
+                Log.i("Pre_Autentification", uiState.value.toString())
                 access_token = AuthService.authClient.authenticate(uiState.value)
-
 
                 if (access_token.access_token != null) {
 
-                    fetchResult.value = ConnectionResult.SUCCES
-                    //Log.i("MainviewModel", access_token.toString())
+                    _fetchResult.value = ConnectionResult.SUCCES
+                    Log.i("jeton d'acces  : ", access_token.toString())
+                    Log.i("resulat apres jeton d'acces : ", fetchResult.value.toString())
 
                 } else {
-                    fetchResult.value = ConnectionResult.ERROR
+
+                    _fetchResult.value = ConnectionResult.ERROR
+                    Log.i("Resultat_Valeur", fetchResult.value.toString())
                     Log.e("MainviewModel", "Le token d'accès est null ")
                 }
 
             }catch (httpException: HttpException){
-                fetchResult.value = ConnectionResult.ERROR
+                _fetchResult.value = ConnectionResult.ERROR
 
             } catch (e: Exception) {
-                fetchResult.value = ConnectionResult.ERROR
+                _fetchResult.value = ConnectionResult.ERROR
                 Log.e("MainviewModel", e.message, e)
             }
 
         }
+        Log.i("verif_resulat_thread_#Login.kt", fetchResult.value.toString() )
+
     }
 
 
@@ -76,16 +83,7 @@ class AyoubViewModel : ViewModel(){
     fun resetAll(){
         _uiState.value = DataPerson()
     }
-    /*
 
-    58183@etu.he2b.be     email ok
-    nnnnn                  psw  = pas ok donc met a faux
-
-
-
-
-
-     */
 
     /**
      * Receives a string and verifies if it is in email format.

@@ -31,24 +31,27 @@ import com.example.mob_ayoub_project.data.Recipe
 import com.example.mob_ayoub_project.network.Recipe.RecipesResponse
 @Composable
 fun AllRecipeFromCuisineScreen(
-    modifier: Modifier = Modifier,
     allRecipe: List<Recipe>,
     onRecipeChoosed: (Recipe) -> Unit = {},
     ) {
 
-    Log.i("Liste attendu pour affcihage", allRecipe.toString())
+    Log.i("Liste attendu pour affichage", allRecipe.toString())
     LazyColumn() {
         items(items = allRecipe) {recipe ->
             ColumnItem(
                 modifier = Modifier,
                 recipe = recipe,
                 onClick = {
-                    Log.i("Recete clickée", recipe.toString())
+                    Log.i("Recette clickée", recipe.toString())
                     onRecipeChoosed(recipe)
                 })
         }
     }
 }
+
+/**
+ * Represents each recipe displayed from a specific cuisine
+ */
 @Composable
 fun ColumnItem(modifier: Modifier, recipe: Recipe, onClick  :() -> Unit) {
     Card(
@@ -77,8 +80,10 @@ fun ColumnItem(modifier: Modifier, recipe: Recipe, onClick  :() -> Unit) {
                     modifier = Modifier
                         .size(90.dp)
                 )
-
-                Text(text = recipe.title, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+                Text(text = recipe.title,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 5.dp))
             }
         }
     }

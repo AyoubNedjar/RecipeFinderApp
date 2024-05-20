@@ -8,7 +8,7 @@ import androidx.room.Query
 import com.example.mob_ayoub_project.data.InfosFromOneRecipe
 
 
-//représente les opérations à effectuer sur la db
+// Represents the operations to perform on the database
 @Dao
 interface RecipeFavoriteDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

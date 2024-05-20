@@ -1,5 +1,7 @@
 package com.example.mob_ayoub_project.data
 
+
+
 enum class Cuisine {
     AFRICAN,
     ASIAN,

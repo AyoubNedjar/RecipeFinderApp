@@ -5,7 +5,11 @@ import com.example.mob_ayoub_project.data.Ingredients
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 
-class Converters {//on veut transformer la liste d'ingredients en formats json
+
+/**
+ * we want to transform the list of ingredients into JSON format and reverse
+ */
+class Converters {
 
     private val moshi = Moshi.Builder().build()
     private val listType = Types.newParameterizedType(List::class.java, Ingredients::class.java)

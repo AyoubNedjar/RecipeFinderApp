@@ -6,6 +6,9 @@ import androidx.room.PrimaryKey
 import com.example.mob_ayoub_project.data.Ingredients
 
 
+/*
+ Creation of the favorites table
+ */
 @Entity(tableName = "RecipeFavorite")
 data class RecipeFavorite(
 

@@ -66,8 +66,6 @@ fun DisplayFavoritesRecipe(favoritesList : List<RecipeFavorite>,
 }
 
 
-//TODO rajouter une option pour supprimer avec une image de poubelle
-
 @Composable
 fun ColumnItem2(modifier: Modifier = Modifier, recipe: RecipeFavorite, onSelectionDeleted: (RecipeFavorite) -> Unit,onRecipeClickable: (RecipeFavorite) -> Unit ){
 
@@ -89,7 +87,6 @@ fun ColumnItem2(modifier: Modifier = Modifier, recipe: RecipeFavorite, onSelecti
             modifier
                 .padding(10.dp)
                 .fillMaxSize(),
-//            contentAlignment = Alignment.Center
         )
         {
             Row(

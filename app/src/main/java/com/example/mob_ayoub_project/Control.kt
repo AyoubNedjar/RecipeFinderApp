@@ -34,11 +34,12 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.painterResource
 import com.example.mob_ayoub_project.data.Cuisine
 import com.example.mob_ayoub_project.data.InfosFromOneRecipe
 import com.example.mob_ayoub_project.data.Ingredients
-import com.example.mob_ayoub_project.models.AyoubViewModel
+import com.example.mob_ayoub_project.models.LoginViewModel
 import com.example.mob_ayoub_project.models.RecipeViewModel
 import com.example.mob_ayoub_project.ui.screens.login.DisplayAboutUser
 import com.example.mob_ayoub_project.ui.screens.recipes.AllRecipeFromCuisineScreen
@@ -74,7 +75,7 @@ enum class AyoubScreen(@StringRes val title: Int) {
  */
 @Composable
 fun ControlApp(
-    loginViewModel: AyoubViewModel = viewModel(),
+    loginViewModel: LoginViewModel = viewModel(),
     recipeViewModel : RecipeViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ){
@@ -86,12 +87,16 @@ fun ControlApp(
     var emailError by remember { mutableStateOf("") }
 
     //stores de current Screen
-    var currentScreen by remember { mutableStateOf(AyoubScreen.CreateRecipe) }
+    var currentScreen by remember { mutableStateOf(AyoubScreen.Start) }
 
     var recipeChoosedFromFavorites  by remember { mutableStateOf(InfosFromOneRecipe()) }
 
     Scaffold (
 
+        /*
+        You can go back when viewing the recipe details after clicking on a recipe from
+        the favorites, or when on the screen displaying all the recipes of a cuisine
+         */
         topBar = {
                  if(currentScreen != AyoubScreen.Start
                      && currentScreen != AyoubScreen.Favorites
@@ -119,18 +124,20 @@ fun ControlApp(
         //container that uses composable for navigation
         NavHost(
             navController = navController,
-            startDestination = AyoubScreen.Cuisines.name,
+            startDestination = AyoubScreen.Start.name,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
 
             ) {
 
-            //le chemin pour le premier écran
+            //Path for the first screen
             composable(route = AyoubScreen.Start.name) {
                 currentScreen = AyoubScreen.Start
+
+                val fetchResult by loginViewModel.fetchResult.collectAsState()
+
                 StartConnection(
-                    modelView = loginViewModel,
                     email = uiState.email,
                     emailChange = { loginViewModel.setEmail(it) },
                     emailError = emailError,
@@ -144,35 +151,35 @@ fun ControlApp(
                             emailError = "Adresse e-mail invalide"
                             loginViewModel.resetAll()
                         } else {
-                            //
+                            Log.i("Email validé", uiState.email)
                             loginViewModel.fetchUserInfos()
-                            if (loginViewModel.fetchResult.value == AyoubViewModel.ConnectionResult.SUCCES) {
-                               // navController.navigate(AyoubScreen.He2b.name)
-                                navController.navigate(AyoubScreen.Cuisines.name)
-                            }else{
-                                emailError = "email ou mot de passe invalide"
-                                loginViewModel.resetAll()
-                            }
+
                         }
 
                     }
 
                 )
+
+                if (fetchResult == LoginViewModel.ConnectionResult.SUCCES) {
+                    navController.navigate(AyoubScreen.Cuisines.name)
+                } else if (fetchResult == LoginViewModel.ConnectionResult.ERROR) {
+                    emailError = "Email ou mot de passe invalide"
+
+                }
             }
 
-            //le chemin pour les infos de l'utilisateur
+
             composable(route = AyoubScreen.About.name) {
                 currentScreen = AyoubScreen.About
                 DisplayAboutUser()
             }
 
-            //le chemin pour le deuxième écran
             composable(route = AyoubScreen.He2b.name) {
                 currentScreen = AyoubScreen.He2b
                 He2bImage()
             }
             
-            //le chemin pour les cuisines
+            //Path for cuisines
             composable(route = AyoubScreen.Cuisines.name) {
                 currentScreen = AyoubScreen.Cuisines
                 SelectCuisineScreen(
@@ -185,7 +192,7 @@ fun ControlApp(
                     )
             }
 
-            //chemin pour arriver a voir toutes les recettes d'une cuisine
+            //chemin pour voir toutes les recettes d'une cuisine
             composable(route = AyoubScreen.AllRecipe.name){
                 currentScreen = AyoubScreen.AllRecipe
                 Log.i("Résults of recipes", recipeViewModel.results.toString())
@@ -199,7 +206,6 @@ fun ControlApp(
             }
 
             //chemin pour voir la recette selectionnée + possibilité d'ajouter aux favoris
-
             composable(route=AyoubScreen.RecipeChoosed.name){
 
                 currentScreen = AyoubScreen.RecipeChoosed
@@ -226,6 +232,11 @@ fun ControlApp(
                     onSelectionDeleted = { theRecipeToDelete->
                         recipeViewModel.deleteFavoriteFromTheDatabase(theRecipeToDelete)
                     },
+
+                    /*
+                   When a recipe is clicked in the favorites, it should display
+                   the details of that recipe, so the DisplayRecipeChoosed function should be reused.
+                     */
                     onRecipeClickable = {
                         recipeClicked->
                         recipeChoosedFromFavorites = InfosFromOneRecipe(
@@ -234,7 +245,7 @@ fun ControlApp(
                             veryHealthy = recipeClicked.veryHealthy,
                             summary = recipeClicked.summary,
                             instructions =recipeClicked.instructions,
-                            extendedIngredients = recipeClicked.extendedIngredients // Vous pouvez ajouter les ingrédients si nécessaire
+                            extendedIngredients = recipeClicked.extendedIngredients
                         )
 
                         navController.navigate(AyoubScreen.RecipeChoosedFromFavorits.name)
@@ -243,13 +254,15 @@ fun ControlApp(
                 )
 
             }
+
+            // Path to view the details of a recipe in the favorites
             composable(route =AyoubScreen.RecipeChoosedFromFavorits.name){
                 currentScreen = AyoubScreen.RecipeChoosedFromFavorits
                 Log.i("RECIPE_FAVORITS", recipeChoosedFromFavorites.toString())
                 DisplayRecipeChoosed(recipe = recipeChoosedFromFavorites)
             }
 
-            //chemin pour créer sa propre recette de cuisine 
+            // Path to create your own recipe
             composable(route=AyoubScreen.CreateRecipe.name){
                 currentScreen = AyoubScreen.CreateRecipe
                 CreateRecipeScreen(
@@ -270,7 +283,6 @@ fun BottomNavigationBar(navController: NavHostController, currentScreen: AyoubSc
     BottomNavigation{
 
         if (currentScreen != AyoubScreen.Start ){
-
 
             BottomNavigationItem(
                 icon = {
@@ -298,7 +310,7 @@ fun BottomNavigationBar(navController: NavHostController, currentScreen: AyoubSc
                 }
             )
 
-            BottomNavigationItem(//pour les favoris
+            BottomNavigationItem(
                 icon = {
                     Icon(
                         imageVector = Icons.Filled.Favorite,

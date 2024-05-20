@@ -8,14 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.mob_ayoub_project.data.Cuisine
 import com.example.mob_ayoub_project.data.InfosFromOneRecipe
 import com.example.mob_ayoub_project.data.Recipe
+import com.example.mob_ayoub_project.data.Utils
 import com.example.mob_ayoub_project.database.RecipeFavorite
 import com.example.mob_ayoub_project.network.Recipe.RecipeService
-import com.example.mob_ayoub_project.network.Recipe.RecipesResponse
 import kotlinx.coroutines.launch
 
 class RecipeViewModel : ViewModel (){
 
-    val apiKey = "e9e5c00dabbd4da198c72832aa7c0619"
 
     private var cuisineChoosed = mutableStateOf<Cuisine?>(null)
 
@@ -40,18 +39,16 @@ class RecipeViewModel : ViewModel (){
     fun addFavoriteInTheDatabase(recipe : InfosFromOneRecipe){
         viewModelScope.launch {
             Repository.insertFavoriteInDatabase(recipe)
-            //ici on a pa besoin de créer de nouvelle methode pour afficher
-            // et recup les données car on estime qu'elles se feront directement une fois
-            //qu'on aura inserer une nouvelle note
+            // Here we don't need to create new methods to display and retrieve data because
+            // it's assumed that they will be done directly once we have inserted a new note.
             favoritesList.value = Repository.getAllFavoritesRecipe()
         }
     }
     fun deleteFavoriteFromTheDatabase(recipe : RecipeFavorite){
         viewModelScope.launch {
             Repository.removeFavoriteFromDatabase(recipe)
-            //ici on a pa besoin de créer de nouvelle methode pour afficher
-            // et recup les données car on estime qu'elles se feront directement une fois
-            //qu'on aura inserer une nouvelle note
+            // Here we don't need to create new methods to display and retrieve data
+            // because it's assumed that they will be done directly once we have deleted a new note
             favoritesList.value = Repository.getAllFavoritesRecipe()
         }
     }
@@ -69,12 +66,12 @@ class RecipeViewModel : ViewModel (){
                 val cuisine = cuisineChoosed.value
                 if(cuisine!=null){
                     RecipeService.initializeRecipeClient()
-                    val responseRecipes = RecipeService.recipeClient?.chooseCuisine(cuisine.name,apiKey)
+                    val responseRecipes = RecipeService.recipeClient?.chooseCuisine(cuisine.name, Utils.apiKeyRecipe)
                     if (responseRecipes != null) {
                         results.value= responseRecipes.results
                         Log.i("Recipe from Cuisine", results.toString())
                     }else {
-                        Log.e("Recipe from Cuisine", "Response recipes is null")
+                        Log.e("Recipe from Cuisine", "Reponse de la recectte est null")
                     }
                 }else{
                     Log.e("Recipe from Cuisine", "Aucune cuisine sélectionnée")
@@ -94,7 +91,7 @@ class RecipeViewModel : ViewModel (){
         if (idRecipeChoosed != null) {
             viewModelScope.launch {
                 try {
-                    val responseForTheRecipe = RecipeService.recipeClient?.infosForOneRecipe(idRecipeChoosed, apiKey)
+                    val responseForTheRecipe = RecipeService.recipeClient?.infosForOneRecipe(idRecipeChoosed, Utils.apiKeyRecipe)
 
                     responseForTheRecipe?.let { response ->
                         resultsInfosFromOneRecipe.value = response
@@ -103,11 +100,11 @@ class RecipeViewModel : ViewModel (){
 
                 } catch (e: Exception) {
                     // Gérer l'erreur ici
-                    Log.e("Fetch Recipe Infos", "An error occurred: ${e.message}", e)
+                    Log.e("recherche recette infos ", "erreur produite : ${e.message}", e)
                 }
             }
         } else {
-            Log.e("Fetch Recipe Infos", "Recipe ID is null")
+            Log.e("recherche recette infos", "Recette ID est nulle")
         }
     }
 }
