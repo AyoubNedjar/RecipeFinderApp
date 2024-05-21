@@ -34,12 +34,4 @@ fun He2bImage() {
         )
     }
 }
-@Preview
-@Composable
-fun he2bPreview(){
-    Mob_Ayoub_ProjectTheme{
-      He2bImage()
-    }
-}
-
 

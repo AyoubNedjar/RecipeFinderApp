@@ -1,21 +1,17 @@
 package com.example.mob_ayoub_project.ui.screens.recipes
 
-import android.inputmethodservice.Keyboard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.verticalScroll
+
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,25 +24,25 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mob_ayoub_project.R
 import com.example.mob_ayoub_project.data.Cuisine
-import com.example.mob_ayoub_project.data.Recipe
-import com.example.mob_ayoub_project.ui.theme.Mob_Ayoub_ProjectTheme
 
 
 @Composable
 fun SelectCuisineScreen(
     cuisines: List<Cuisine>,
-    onSelectionChanged: (Cuisine) -> Unit = {},
-    modifier: Modifier = Modifier
-){
+    onSelectionChanged: (Cuisine) -> Unit = {}
+) {
 
-    var selectedCuisine by rememberSaveable{ mutableStateOf<Cuisine?>(null) }
+    var selectedCuisine by rememberSaveable { mutableStateOf<Cuisine?>(null) }
+    val scrollState = rememberScrollState()
 
     Column(
-        modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium)).background(Color.White)
+        modifier = Modifier
+            .padding(dimensionResource(R.dimen.padding_medium))
+            .background(Color.White)
+            .verticalScroll(scrollState)
     ) {
         cuisines.forEachIndexed { index, item ->
 
@@ -54,7 +50,7 @@ fun SelectCuisineScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable(
-                        onClick = { //quand on clique sur une cuisine ca execute la méthode en paramètre
+                        onClick = { //when we click on a kitchen it executes the method as a parameter
                             selectedCuisine = item
                             onSelectionChanged(item)
                         }
@@ -71,7 +67,9 @@ fun SelectCuisineScreen(
                 Text(
                     text = item.name,
                     color = if (selectedCuisine == item) Color.White else Color.Black,
-                    modifier = Modifier.padding(15.dp).align(Alignment.Center)
+                    modifier = Modifier
+                        .padding(15.dp)
+                        .align(Alignment.Center)
                 )
             }
             if (index < cuisines.size - 1) {
@@ -81,14 +79,5 @@ fun SelectCuisineScreen(
     }
 }
 
-@Preview
-@Composable
-fun SelectCuisinePreview() {
-   Mob_Ayoub_ProjectTheme {
-        SelectCuisineScreen(
-            cuisines = Cuisine.values().toList(),
-            modifier = Modifier.fillMaxHeight()
-        )
-    }
-}
+
 

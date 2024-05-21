@@ -4,13 +4,11 @@ import android.text.Html
 import android.text.Spanned
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -23,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -35,16 +32,14 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.example.mob_ayoub_project.data.InfosFromOneRecipe
-import com.example.mob_ayoub_project.data.Recipe
 
 
 @Composable
 fun DisplayRecipeChoosed(
-    recipe : InfosFromOneRecipe,
-    onButtonAddClicked : (InfosFromOneRecipe) -> Unit = {}
-){
+    recipe: InfosFromOneRecipe,
+    onButtonAddClicked: (InfosFromOneRecipe) -> Unit = {}
+) {
 
     val scrollState = rememberScrollState()
 
@@ -54,7 +49,7 @@ fun DisplayRecipeChoosed(
             .padding(16.dp)
             .verticalScroll(scrollState)
     ) {
-        // Affichage de l'image de la recette
+
         recipe.image?.let { imageUrl ->
             Image(
                 painter = rememberAsyncImagePainter(model = imageUrl),
@@ -66,8 +61,6 @@ fun DisplayRecipeChoosed(
                 contentScale = ContentScale.Crop
             )
         }
-
-        // Affichage du titre de la recette
         recipe.title?.let { title ->
             Text(
                 text = title,
@@ -78,12 +71,13 @@ fun DisplayRecipeChoosed(
         }
 
 
-        Text(text = "Santé",
+        Text(
+            text = "Santé",
             style = TextStyle(
                 textDecoration = TextDecoration.Underline,
-                fontSize = 20.sp)
+                fontSize = 20.sp
+            )
         )
-        // Affichage de l'indicateur de santé
         recipe.veryHealthy?.let { isHealthy ->
             val healthIndicator = if (isHealthy) "Sain" else "Pas très sain"
             Text(
@@ -94,22 +88,24 @@ fun DisplayRecipeChoosed(
             )
         }
 
-        Text(text = "Résumé",
+        Text(
+            text = "Résumé",
             style = TextStyle(
                 textDecoration = TextDecoration.Underline,
-                fontSize = 20.sp)
+                fontSize = 20.sp
+            )
         )
-        // Affichage du résumé de la recette
         recipe.summary?.let { summary ->
-            HtmlText(html = summary.toString().trimIndent())
+            HtmlText(html = summary.trimIndent())
         }
         Spacer(modifier = Modifier.height(15.dp))
-        Text(text = "Ingredients",
+        Text(
+            text = "Ingredients",
             style = TextStyle(
                 textDecoration = TextDecoration.Underline,
-                fontSize = 20.sp)
+                fontSize = 20.sp
             )
-        // Affichage des ingrédients
+        )
         recipe.extendedIngredients.forEach { ingredient ->
             Text(
                 text = "- ${ingredient.name}",
@@ -119,20 +115,23 @@ fun DisplayRecipeChoosed(
         }
         Spacer(modifier = Modifier.height(15.dp))
 
-        Text(text = "Instructions",
+        Text(
+            text = "Instructions",
             style = TextStyle(
                 textDecoration = TextDecoration.Underline,
-                fontSize = 20.sp)
+                fontSize = 20.sp
+            )
         )
-        // Affichage des instructions
         recipe.instructions?.let { instructions ->
-            HtmlText(html = instructions.toString().trimIndent())
+            HtmlText(html = instructions.trimIndent())
         }
         Spacer(modifier = Modifier.height(30.dp))
-        Button(onClick = {
-            onButtonAddClicked(recipe)
-        },
-            modifier = Modifier.align(Alignment.End)) {
+        Button(
+            onClick = {
+                onButtonAddClicked(recipe)
+            },
+            modifier = Modifier.align(Alignment.End)
+        ) {
             Text(text = "add Favorites")
         }
 
@@ -142,6 +141,9 @@ fun DisplayRecipeChoosed(
 }
 
 
+/**
+ * to convert the html code in String
+ */
 @Composable
 fun HtmlText(html: String) {
     val spanned = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
@@ -156,30 +158,35 @@ fun HtmlText(html: String) {
 fun Spanned.toAnnotatedString(): AnnotatedString {
     return buildAnnotatedString {
         append(this@toAnnotatedString.toString())
-        this@toAnnotatedString.getSpans(0, this@toAnnotatedString.length, Any::class.java).forEach { span ->
-            val start = this@toAnnotatedString.getSpanStart(span)
-            val end = this@toAnnotatedString.getSpanEnd(span)
-            val flags = this@toAnnotatedString.getSpanFlags(span)
+        this@toAnnotatedString.getSpans(0, this@toAnnotatedString.length, Any::class.java)
+            .forEach { span ->
+                val start = this@toAnnotatedString.getSpanStart(span)
+                val end = this@toAnnotatedString.getSpanEnd(span)
+                when (span) {
+                    is android.text.style.StyleSpan -> {
+                        when (span.style) {
+                            android.graphics.Typeface.BOLD -> {
+                                addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, end)
+                            }
 
-            when (span) {
-                is android.text.style.StyleSpan -> {
-                    when (span.style) {
-                        android.graphics.Typeface.BOLD -> {
-                            addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, end)
+                            android.graphics.Typeface.ITALIC -> {
+                                addStyle(SpanStyle(fontStyle = FontStyle.Italic), start, end)
+                            }
                         }
-                        android.graphics.Typeface.ITALIC -> {
-                            addStyle(SpanStyle(fontStyle = FontStyle.Italic), start, end)
+                    }
+
+                    is android.text.style.URLSpan -> {
+                        addStringAnnotation("URL", span.url, start, end)
+                        withStyle(
+                            style = SpanStyle(
+                                color = Color.Blue,
+                                textDecoration = TextDecoration.Underline
+                            )
+                        ) {
+                            append(this@toAnnotatedString.subSequence(start, end))
                         }
                     }
                 }
-                is android.text.style.URLSpan -> {
-                    addStringAnnotation("URL", span.url, start, end)
-                    withStyle(style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)) {
-                        append(this@toAnnotatedString.subSequence(start, end))
-                    }
-                }
-                // Ajoutez d'autres types de span si nécessaire
             }
-        }
     }
 }

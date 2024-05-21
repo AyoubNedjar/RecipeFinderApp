@@ -19,11 +19,11 @@ import com.example.mob_ayoub_project.ui.theme.Mob_Ayoub_ProjectTheme
 
 @Composable
 fun DisplayAboutUser(
-){
+) {
 
     Column(
         modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally ,
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text("Ayoub Nedjar", fontWeight = FontWeight.Bold, style = TextStyle(fontSize = 24.sp))
@@ -33,10 +33,4 @@ fun DisplayAboutUser(
         Text("F11", style = TextStyle(fontSize = 24.sp))
     }
 }
-@Preview
-@Composable
-fun AboutPreview(){
-    Mob_Ayoub_ProjectTheme{
-       DisplayAboutUser()
-    }
-}
+

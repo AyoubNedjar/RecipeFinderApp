@@ -2,7 +2,6 @@ package com.example.mob_ayoub_project.models
 
 import android.util.Log
 import android.util.Patterns
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mob_ayoub_project.data.DataPerson
@@ -15,24 +14,29 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
-class LoginViewModel : ViewModel(){
+class LoginViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(DataPerson())
 
     //make the data stream read-only
     val uiState: StateFlow<DataPerson> = _uiState.asStateFlow()
 
-    var access_token: TokenResponse = TokenResponse()
+    private var access_token: TokenResponse = TokenResponse()
 
 
     val _fetchResult = MutableStateFlow(ConnectionResult.UNINITIALIZED)
     val fetchResult: StateFlow<ConnectionResult> = _fetchResult.asStateFlow()
+
     enum class ConnectionResult {
         SUCCES, ERROR, UNINITIALIZED;
     }
 
-    fun fetchUserInfos(){
-        viewModelScope.launch{
+
+    /**
+     *
+     */
+    fun fetchUserInfos() {
+        viewModelScope.launch {
 
             try {
 
@@ -52,7 +56,7 @@ class LoginViewModel : ViewModel(){
                     Log.e("MainviewModel", "Le token d'accès est null ")
                 }
 
-            }catch (httpException: HttpException){
+            } catch (httpException: HttpException) {
                 _fetchResult.value = ConnectionResult.ERROR
 
             } catch (e: Exception) {
@@ -61,7 +65,7 @@ class LoginViewModel : ViewModel(){
             }
 
         }
-        Log.i("verif_resulat_thread_#Login.kt", fetchResult.value.toString() )
+        Log.i("verif_resulat_thread_#Login.kt", fetchResult.value.toString())
 
     }
 
@@ -69,18 +73,20 @@ class LoginViewModel : ViewModel(){
     fun setEmail(newEmail: String) {
         _uiState.update { currentState ->
             currentState.copy(
-               email = newEmail
+                email = newEmail
             )
         }
     }
-    fun setPasswd(newPswd : String){
+
+    fun setPasswd(newPswd: String) {
         _uiState.update { currentState ->
             currentState.copy(
                 password = newPswd
             )
         }
     }
-    fun resetAll(){
+
+    fun resetAll() {
         _uiState.value = DataPerson()
     }
 
@@ -91,7 +97,7 @@ class LoginViewModel : ViewModel(){
      * @param email The string to be validated as an email.
      * @return True if the string is in email format, false otherwise.
      */
-    fun validateEmail(email : String) : Boolean {
+    fun validateEmail(email: String): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 }

@@ -13,7 +13,7 @@ import com.example.mob_ayoub_project.database.RecipeFavorite
 import com.example.mob_ayoub_project.network.Recipe.RecipeService
 import kotlinx.coroutines.launch
 
-class RecipeViewModel : ViewModel (){
+class RecipeViewModel : ViewModel() {
 
 
     private var cuisineChoosed = mutableStateOf<Cuisine?>(null)
@@ -21,13 +21,11 @@ class RecipeViewModel : ViewModel (){
 
     var results: MutableState<List<Recipe>> = mutableStateOf(emptyList())
 
-    var recipeChoosed  = mutableStateOf<Recipe?>(null)
+    var recipeChoosed = mutableStateOf<Recipe?>(null)
 
     var resultsInfosFromOneRecipe = mutableStateOf<InfosFromOneRecipe?>(null)
 
-    var favoritesList : MutableState<List<RecipeFavorite>> = mutableStateOf(listOf())
-
-
+    var favoritesList: MutableState<List<RecipeFavorite>> = mutableStateOf(listOf())
 
 
     init {
@@ -36,7 +34,7 @@ class RecipeViewModel : ViewModel (){
         }
     }
 
-    fun addFavoriteInTheDatabase(recipe : InfosFromOneRecipe){
+    fun addFavoriteInTheDatabase(recipe: InfosFromOneRecipe) {
         viewModelScope.launch {
             Repository.insertFavoriteInDatabase(recipe)
             // Here we don't need to create new methods to display and retrieve data because
@@ -44,7 +42,8 @@ class RecipeViewModel : ViewModel (){
             favoritesList.value = Repository.getAllFavoritesRecipe()
         }
     }
-    fun deleteFavoriteFromTheDatabase(recipe : RecipeFavorite){
+
+    fun deleteFavoriteFromTheDatabase(recipe: RecipeFavorite) {
         viewModelScope.launch {
             Repository.removeFavoriteFromDatabase(recipe)
             // Here we don't need to create new methods to display and retrieve data
@@ -53,30 +52,33 @@ class RecipeViewModel : ViewModel (){
         }
     }
 
-    fun setRecipeChoosed(newRecipe : Recipe){
+    fun setRecipeChoosed(newRecipe: Recipe) {
         recipeChoosed.value = newRecipe
     }
-    fun setCuisine(newCuisine : Cuisine) {
-        cuisineChoosed.value = newCuisine;
+
+    fun setCuisine(newCuisine: Cuisine) {
+        cuisineChoosed.value = newCuisine
 
     }
-    fun fetchRecipesFromCuisine(){
+
+    fun fetchRecipesFromCuisine() {
         viewModelScope.launch {
             try {
                 val cuisine = cuisineChoosed.value
-                if(cuisine!=null){
+                if (cuisine != null) {
                     RecipeService.initializeRecipeClient()
-                    val responseRecipes = RecipeService.recipeClient?.chooseCuisine(cuisine.name, Utils.apiKeyRecipe)
+                    val responseRecipes =
+                        RecipeService.recipeClient?.chooseCuisine(cuisine.name, Utils.apiKeyRecipe)
                     if (responseRecipes != null) {
-                        results.value= responseRecipes.results
+                        results.value = responseRecipes.results
                         Log.i("Recipe from Cuisine", results.toString())
-                    }else {
+                    } else {
                         Log.e("Recipe from Cuisine", "Reponse de la recectte est null")
                     }
-                }else{
+                } else {
                     Log.e("Recipe from Cuisine", "Aucune cuisine sélectionnée")
                 }
-            }catch(e: Exception){
+            } catch (e: Exception) {
                 Log.e("Recipe from Cuisine", "La reception des recette n'a pas fonctionné")
                 Log.e("Recipe from Cuisine", e.message, e)
                 e.printStackTrace()
@@ -85,13 +87,16 @@ class RecipeViewModel : ViewModel (){
     }
 
 
-    fun fetchInfosFromRecipe(){
+    fun fetchInfosFromRecipe() {
 
         val idRecipeChoosed = recipeChoosed.value?.id
         if (idRecipeChoosed != null) {
             viewModelScope.launch {
                 try {
-                    val responseForTheRecipe = RecipeService.recipeClient?.infosForOneRecipe(idRecipeChoosed, Utils.apiKeyRecipe)
+                    val responseForTheRecipe = RecipeService.recipeClient?.infosForOneRecipe(
+                        idRecipeChoosed,
+                        Utils.apiKeyRecipe
+                    )
 
                     responseForTheRecipe?.let { response ->
                         resultsInfosFromOneRecipe.value = response

@@ -1,12 +1,10 @@
 package com.example.mob_ayoub_project.ui.screens.recipes
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,24 +26,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
+
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import coil.compose.rememberAsyncImagePainter
 import com.example.mob_ayoub_project.data.InfosFromOneRecipe
 import com.example.mob_ayoub_project.data.Ingredients
-import com.example.mob_ayoub_project.ui.theme.Mob_Ayoub_ProjectTheme
-import java.util.jar.Manifest
-
 
 @Composable
 fun CreateRecipeScreen(
     modifier: Modifier,
-   // onImageSelected : (Uri) -> Unit,
     onButtonClicked : (InfosFromOneRecipe) -> Unit = {}
-    //onButtonFavoritesSelected :() -> Unit = {}
  ) {
 
         val scrollable = rememberScrollState()

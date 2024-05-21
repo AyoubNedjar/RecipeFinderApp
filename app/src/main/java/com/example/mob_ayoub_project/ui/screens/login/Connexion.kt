@@ -84,7 +84,7 @@ fun StartConnection(
 
 @Preview
 @Composable
-fun StartPreview(){
+fun StartPreview() {
 
 }
 

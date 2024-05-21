@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- très important pour envoyé les requetes-->
+    <!-- for internet-->
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application

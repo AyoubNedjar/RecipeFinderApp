@@ -1,6 +1,5 @@
 package com.example.mob_ayoub_project.ui.screens.recipes
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,14 +10,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
@@ -34,31 +31,33 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.mob_ayoub_project.data.Recipe
 import com.example.mob_ayoub_project.database.RecipeFavorite
 
 
 @Composable
-fun DisplayFavoritesRecipe(favoritesList : List<RecipeFavorite>,
-                           contentPadding: PaddingValues,
-                           onSelectionDeleted : (RecipeFavorite) -> Unit,
-                           onRecipeClickable: (RecipeFavorite) -> Unit,
-                           modifier : Modifier,){
+fun DisplayFavoritesRecipe(
+    favoritesList: List<RecipeFavorite>,
+    contentPadding: PaddingValues,
+    onSelectionDeleted: (RecipeFavorite) -> Unit,
+    onRecipeClickable: (RecipeFavorite) -> Unit,
+    modifier: Modifier,
+) {
 
-    if (favoritesList.size==0){
+    if (favoritesList.isEmpty()) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "Vous n'avez aucun favoris ",
+            Text(
+                text = "Vous n'avez aucun favoris ",
                 fontWeight = FontWeight.Bold,
                 style = TextStyle(fontSize = 24.sp)
             )
         }
-    }else{
+    } else {
         LazyColumn(modifier = modifier, contentPadding = contentPadding) {
-            items(items = favoritesList) {theRecipeFavorite->
+            items(items = favoritesList) { theRecipeFavorite ->
                 ColumnItem2(modifier, theRecipeFavorite, onSelectionDeleted, onRecipeClickable)
             }
         }
@@ -67,7 +66,12 @@ fun DisplayFavoritesRecipe(favoritesList : List<RecipeFavorite>,
 
 
 @Composable
-fun ColumnItem2(modifier: Modifier = Modifier, recipe: RecipeFavorite, onSelectionDeleted: (RecipeFavorite) -> Unit,onRecipeClickable: (RecipeFavorite) -> Unit ){
+fun ColumnItem2(
+    modifier: Modifier = Modifier,
+    recipe: RecipeFavorite,
+    onSelectionDeleted: (RecipeFavorite) -> Unit,
+    onRecipeClickable: (RecipeFavorite) -> Unit
+) {
 
     Card(
         modifier
