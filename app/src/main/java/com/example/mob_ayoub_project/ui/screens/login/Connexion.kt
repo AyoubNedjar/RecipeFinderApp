@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.mob_ayoub_project.models.LoginViewModel
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 
 //login screen
 @Composable
@@ -65,7 +65,8 @@ fun StartConnection(
             TextField(
                 value = psw,
                 onValueChange = pswChange,
-                modifier = Modifier.weight(3f)
+                modifier = Modifier.weight(3f),
+                visualTransformation = PasswordVisualTransformation()
             )
         }
 

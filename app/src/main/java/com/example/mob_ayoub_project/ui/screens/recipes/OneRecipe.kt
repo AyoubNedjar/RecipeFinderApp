@@ -79,7 +79,7 @@ fun DisplayRecipeChoosed(
             )
         )
         recipe.veryHealthy?.let { isHealthy ->
-            val healthIndicator = if (isHealthy) "Sain" else "Pas très sain"
+            val healthIndicator = if (isHealthy) "Healthy" else "Not very healthy"
             Text(
                 text = healthIndicator,
                 fontSize = 16.sp,

@@ -32,10 +32,10 @@ fun AllRecipeFromCuisineScreen(
     onRecipeChoosed: (Recipe) -> Unit = {},
 ) {
 
-    val scrollState = rememberScrollState()
+
 
     Log.i("Liste attendu pour affichage", allRecipe.toString())
-    LazyColumn(modifier = Modifier.verticalScroll(scrollState)) {
+    LazyColumn() {
         items(items = allRecipe) { recipe ->
             ColumnItem(
                 modifier = Modifier,

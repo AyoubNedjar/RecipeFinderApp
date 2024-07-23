@@ -22,7 +22,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.mob_ayoub_project.ui.screens.login.He2bImage
 import com.example.mob_ayoub_project.ui.screens.login.StartConnection
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -55,7 +54,6 @@ import java.net.URLEncoder
  */
 enum class AyoubScreen(@StringRes val title: Int) {
     Start(title = R.string.app_name),
-    He2b(title = R.string.he2b),
     About(title = R.string.about),
     Cuisines(R.string.cuisines),
     AllRecipe(R.string.allRecipe),
@@ -71,7 +69,6 @@ enum class AyoubScreen(@StringRes val title: Int) {
  *
  * @param viewModel Manages the application's data, contains the email.
  * @param navController Manages navigation between the two destinations,
- * the connection page and the He2b page.
  */
 @Composable
 fun ControlApp(
@@ -100,7 +97,6 @@ fun ControlApp(
         topBar = {
                  if(currentScreen != AyoubScreen.Start
                      && currentScreen != AyoubScreen.Favorites
-                     && currentScreen != AyoubScreen.He2b
                      && currentScreen != AyoubScreen.About
                      && currentScreen != AyoubScreen.Cuisines){
                      TopAppBar (
@@ -124,7 +120,7 @@ fun ControlApp(
         //container that uses composable for navigation
         NavHost(
             navController = navController,
-            startDestination = AyoubScreen.Start.name,
+            startDestination = AyoubScreen.Cuisines.name,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
@@ -174,10 +170,6 @@ fun ControlApp(
                 DisplayAboutUser()
             }
 
-            composable(route = AyoubScreen.He2b.name) {
-                currentScreen = AyoubScreen.He2b
-                He2bImage()
-            }
             
             //Path for cuisines
             composable(route = AyoubScreen.Cuisines.name) {
@@ -214,7 +206,7 @@ fun ControlApp(
                         infosRecipeExist,
                         onButtonAddClicked = {theRecipeAddedInFavorits ->
                             recipeViewModel.addFavoriteInTheDatabase(theRecipeAddedInFavorits)
-                            navController.navigate(AyoubScreen.Favorites.name)
+
 
                         })
                 }
@@ -291,24 +283,12 @@ fun BottomNavigationBar(navController: NavHostController, currentScreen: AyoubSc
                         contentDescription = "Home"
                     )
                 },
-                selected = currentScreen == AyoubScreen.He2b,
+                selected = currentScreen == AyoubScreen.Cuisines,
                 onClick = {
-                    navController.navigate(route = AyoubScreen.He2b.name)
+                    navController.navigate(route = AyoubScreen.Cuisines.name)
                 }
             )
 
-            BottomNavigationItem(
-                icon = {
-                    Image(
-                        painter = painterResource(id = R.drawable.kitchen),
-                        contentDescription = "Cuisines"
-                    )
-                },
-                selected = currentScreen == AyoubScreen.Cuisines,
-                onClick = {
-                    navController.navigate(AyoubScreen.Cuisines.name)
-                }
-            )
 
             BottomNavigationItem(
                 icon = {

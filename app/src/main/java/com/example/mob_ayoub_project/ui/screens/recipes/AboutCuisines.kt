@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,13 +34,13 @@ fun SelectCuisineScreen(
 ) {
 
     var selectedCuisine by rememberSaveable { mutableStateOf<Cuisine?>(null) }
-    val scrollState = rememberScrollState()
+
 
     Column(
         modifier = Modifier
             .padding(dimensionResource(R.dimen.padding_medium))
             .background(Color.White)
-            .verticalScroll(scrollState)
+
     ) {
         cuisines.forEachIndexed { index, item ->
 
@@ -55,7 +53,6 @@ fun SelectCuisineScreen(
                             onSelectionChanged(item)
                         }
                     )
-                    .background(if (selectedCuisine == item) Color.Blue else Color.Transparent)
                     .padding(5.dp)
                     .clip(RoundedCornerShape(percent = 50))
                     .shadow(
