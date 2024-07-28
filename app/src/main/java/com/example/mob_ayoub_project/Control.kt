@@ -35,9 +35,14 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import androidx.room.TypeConverters
 import com.example.mob_ayoub_project.data.Cuisine
 import com.example.mob_ayoub_project.data.InfosFromOneRecipe
 import com.example.mob_ayoub_project.data.Ingredients
+import com.example.mob_ayoub_project.data.Recipe
+import com.example.mob_ayoub_project.database.Converters
 import com.example.mob_ayoub_project.models.LoginViewModel
 import com.example.mob_ayoub_project.models.RecipeViewModel
 import com.example.mob_ayoub_project.ui.screens.login.DisplayAboutUser
@@ -46,8 +51,12 @@ import com.example.mob_ayoub_project.ui.screens.recipes.CreateRecipeScreen
 import com.example.mob_ayoub_project.ui.screens.recipes.DisplayFavoritesRecipe
 import com.example.mob_ayoub_project.ui.screens.recipes.DisplayRecipeChoosed
 import com.example.mob_ayoub_project.ui.screens.recipes.SelectCuisineScreen
+import com.squareup.moshi.Moshi
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.net.URLEncoder
 
+@TypeConverters(Converters::class)
 
 /**
  * Enumération qui contient les identifiants des diffrentes routes
@@ -76,6 +85,8 @@ fun ControlApp(
     recipeViewModel : RecipeViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ){
+
+    val converters = Converters()
 
     val uiState by loginViewModel.uiState.collectAsState()
     //collects values from view.uiState and wraps them in a state object
@@ -120,7 +131,7 @@ fun ControlApp(
         //container that uses composable for navigation
         NavHost(
             navController = navController,
-            startDestination = AyoubScreen.Cuisines.name,
+            startDestination = AyoubScreen.Cuisines.name,//voiur si on est loguer
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
@@ -176,39 +187,57 @@ fun ControlApp(
                 currentScreen = AyoubScreen.Cuisines
                 SelectCuisineScreen(
                     cuisines = Cuisine.values().toList(),
-                    onSelectionChanged = {
-                        recipeViewModel.setCuisine(it)
-                        recipeViewModel.fetchRecipesFromCuisine()
-                        navController.navigate(AyoubScreen.AllRecipe.name)
+                    onSelectionChanged = {cuisine ->
+                        //passer la cuisine en paramètre
+                        val cuisineString = converters.fromCuisine(cuisine)// rendre en string
+                        Log.i("CUISINE_ENCODED", cuisineString.toString())
+                        navController.navigate("AyoubScreen.AllRecipe.name/$cuisineString")
                     }
-                    )
+                )
             }
 
-            //chemin pour voir toutes les recettes d'une cuisine
-            composable(route = AyoubScreen.AllRecipe.name){
+            //chemin pour voir toutes les recettes d'une cuisine, on fait passé la recette en arguments
+            composable("AyoubScreen.AllRecipe.name/{cuisineString}",
+                arguments = listOf(navArgument("cuisineString"){type = NavType.StringType})
+            ){backStackEntry->
+
                 currentScreen = AyoubScreen.AllRecipe
-                Log.i("Résults of recipes", recipeViewModel.results.toString())
-                AllRecipeFromCuisineScreen(
-                    allRecipe = recipeViewModel.results.value,
-                    onRecipeChoosed = {
-                        recipeViewModel.setRecipeChoosed(it)
-                        recipeViewModel.fetchInfosFromRecipe()
-                        navController.navigate(AyoubScreen.RecipeChoosed.name)
-                    } )
+                val  cuisineString = backStackEntry.arguments?.getString("cuisineString") ?: ""
+                Log.i("NAVIGATION", "Naviguation réussie  : "+cuisineString)
+
+                val cuisineDecoded = converters.toCuisine(cuisineString)
+                Log.i("CUISINE_DECODED", cuisineDecoded.toString())
+
+                if (cuisineDecoded != null) {
+                    AllRecipeFromCuisineScreen(
+                        cuisineChoosed = cuisineDecoded,  //ici je dois récupérer la cuisine passé en paramètre,
+                        onRecipeChoosed = {recipe->
+                            //faire la meme chose qu'en au passé le recipe en paramètre dans la nav
+                            val recipeString = converters.fromRecipe(recipe)
+                            navController.navigate("AyoubScreen.RecipeChoosed.name/$recipeString")
+                            Log.i("CUISINE_ENCODED", recipeString.toString())
+                        } )
+                }
             }
 
             //chemin pour voir la recette selectionnée + possibilité d'ajouter aux favoris
-            composable(route=AyoubScreen.RecipeChoosed.name){
+            composable("AyoubScreen.RecipeChoosed.name/{recipeString}",
+                arguments = listOf(navArgument("recipeString"){type = NavType.StringType})
+            ){backStackEntry->
 
                 currentScreen = AyoubScreen.RecipeChoosed
+
+                val  recipeString = backStackEntry.arguments?.getString("recipeString") ?: ""
+                val recipeDecoded = converters.toRecipe(recipeString)
+
                 recipeViewModel.resultsInfosFromOneRecipe.value?.let { infosRecipeExist ->
-                    DisplayRecipeChoosed(
-                        infosRecipeExist,
-                        onButtonAddClicked = {theRecipeAddedInFavorits ->
-                            recipeViewModel.addFavoriteInTheDatabase(theRecipeAddedInFavorits)
-
-
-                        })
+                    if (recipeDecoded != null) {
+                        DisplayRecipeChoosed(
+                            recipeChoosed = recipeDecoded,//ce qui sera envoyer avec le naviguate
+                            onButtonAddClicked = {theRecipeAddedInFavorits ->
+                                recipeViewModel.addFavoriteInTheDatabase(theRecipeAddedInFavorits)
+                            })
+                    }
                 }
 
             }
@@ -240,7 +269,7 @@ fun ControlApp(
                             extendedIngredients = recipeClicked.extendedIngredients
                         )
 
-                        navController.navigate(AyoubScreen.RecipeChoosedFromFavorits.name)
+                        //navController.navigate(AyoubScreen.RecipeChoosedFromFavorits.name)
                     }
 
                 )
@@ -248,11 +277,11 @@ fun ControlApp(
             }
 
             // Path to view the details of a recipe in the favorites
-            composable(route =AyoubScreen.RecipeChoosedFromFavorits.name){
+            /*composable(route =AyoubScreen.RecipeChoosedFromFavorits.name){
                 currentScreen = AyoubScreen.RecipeChoosedFromFavorits
                 Log.i("RECIPE_FAVORITS", recipeChoosedFromFavorites.toString())
                 DisplayRecipeChoosed(recipe = recipeChoosedFromFavorites)
-            }
+            }*/
 
             // Path to create your own recipe
             composable(route=AyoubScreen.CreateRecipe.name){

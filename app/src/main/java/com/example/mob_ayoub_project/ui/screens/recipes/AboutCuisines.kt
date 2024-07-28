@@ -23,8 +23,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mob_ayoub_project.R
 import com.example.mob_ayoub_project.data.Cuisine
+import com.example.mob_ayoub_project.models.CuisineViewModel
 
 
 @Composable
@@ -33,6 +35,7 @@ fun SelectCuisineScreen(
     onSelectionChanged: (Cuisine) -> Unit = {}
 ) {
 
+    val cuisineViewModel: CuisineViewModel = viewModel()
     var selectedCuisine by rememberSaveable { mutableStateOf<Cuisine?>(null) }
 
 

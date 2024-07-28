@@ -31,15 +31,25 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.mob_ayoub_project.data.InfosFromOneRecipe
+import com.example.mob_ayoub_project.data.Recipe
+import com.example.mob_ayoub_project.models.CuisineViewModel
+import com.example.mob_ayoub_project.models.RecipeDetailsViewModel
 
 
 @Composable
 fun DisplayRecipeChoosed(
-    recipe: InfosFromOneRecipe,
+    recipeChoosed : Recipe,
     onButtonAddClicked: (InfosFromOneRecipe) -> Unit = {}
 ) {
+//nouveau viewmodel
+    //faire un init avec fetch
+
+    val recipeDetailsViewModel: RecipeDetailsViewModel = viewModel()
+    recipeDetailsViewModel.setRecipeChoosed(recipeChoosed)
+    recipeDetailsViewModel.fetchInfosFromRecipe()
 
     val scrollState = rememberScrollState()
 
@@ -50,7 +60,7 @@ fun DisplayRecipeChoosed(
             .verticalScroll(scrollState)
     ) {
 
-        recipe.image?.let { imageUrl ->
+        recipeDetailsViewModel.resultsInfosFromOneRecipe.value?.image?.let { imageUrl ->
             Image(
                 painter = rememberAsyncImagePainter(model = imageUrl),
                 contentDescription = "Recipe Image",
@@ -61,7 +71,7 @@ fun DisplayRecipeChoosed(
                 contentScale = ContentScale.Crop
             )
         }
-        recipe.title?.let { title ->
+        recipeDetailsViewModel.resultsInfosFromOneRecipe.value?.title?.let { title ->
             Text(
                 text = title,
                 fontSize = 24.sp,
@@ -78,7 +88,7 @@ fun DisplayRecipeChoosed(
                 fontSize = 20.sp
             )
         )
-        recipe.veryHealthy?.let { isHealthy ->
+        recipeDetailsViewModel.resultsInfosFromOneRecipe.value?.veryHealthy?.let { isHealthy ->
             val healthIndicator = if (isHealthy) "Healthy" else "Not very healthy"
             Text(
                 text = healthIndicator,
@@ -95,7 +105,7 @@ fun DisplayRecipeChoosed(
                 fontSize = 20.sp
             )
         )
-        recipe.summary?.let { summary ->
+        recipeDetailsViewModel.resultsInfosFromOneRecipe.value?.summary?.let { summary ->
             HtmlText(html = summary.trimIndent())
         }
         Spacer(modifier = Modifier.height(15.dp))
@@ -106,7 +116,7 @@ fun DisplayRecipeChoosed(
                 fontSize = 20.sp
             )
         )
-        recipe.extendedIngredients.forEach { ingredient ->
+        recipeDetailsViewModel.resultsInfosFromOneRecipe.value?.extendedIngredients?.forEach { ingredient ->
             Text(
                 text = "- ${ingredient.name}",
                 fontSize = 16.sp,
@@ -122,13 +132,16 @@ fun DisplayRecipeChoosed(
                 fontSize = 20.sp
             )
         )
-        recipe.instructions?.let { instructions ->
+        recipeDetailsViewModel.resultsInfosFromOneRecipe.value?.instructions?.let { instructions ->
             HtmlText(html = instructions.trimIndent())
         }
         Spacer(modifier = Modifier.height(30.dp))
+
         Button(
             onClick = {
-                onButtonAddClicked(recipe)
+                recipeDetailsViewModel.resultsInfosFromOneRecipe.value?.let {
+                    onButtonAddClicked(it)
+                }
             },
             modifier = Modifier.align(Alignment.End)
         ) {

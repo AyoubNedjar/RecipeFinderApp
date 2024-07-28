@@ -1,5 +1,7 @@
 package com.example.mob_ayoub_project.data
 
+import kotlinx.serialization.Serializable
+
 
 
 enum class Cuisine {

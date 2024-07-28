@@ -18,31 +18,43 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.mob_ayoub_project.data.Cuisine
 import com.example.mob_ayoub_project.data.Recipe
+import com.example.mob_ayoub_project.models.CuisineViewModel
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 
 @Composable
 fun AllRecipeFromCuisineScreen(
-    allRecipe: List<Recipe>,
+    cuisineChoosed : Cuisine,
     onRecipeChoosed: (Recipe) -> Unit = {},
 ) {
+    //cet ecran va etre affiché une fois la cuisine choisie , il recherchera alors les recettes
+    //et les affichera
+    val cuisineViewModel: CuisineViewModel = viewModel()
+
+    LaunchedEffect(cuisineChoosed) {
+        cuisineViewModel.setCuisine(cuisineChoosed)
+        cuisineViewModel.fetchRecipesFromCuisine()
+    }
 
 
-
-    Log.i("Liste attendu pour affichage", allRecipe.toString())
     LazyColumn() {
-        items(items = allRecipe) { recipe ->
+        items(items = cuisineViewModel.allRecipesFromCuisine.value) { recipe ->
             ColumnItem(
                 modifier = Modifier,
                 recipe = recipe,
                 onClick = {
-                    Log.i("Recette clickée", recipe.toString())
-                    onRecipeChoosed(recipe)
+                    onRecipeChoosed(recipe)// une fois cliqué on passera l'id de la recette lors de
+                    //la naviguation dans le Control.kt
                 })
         }
     }

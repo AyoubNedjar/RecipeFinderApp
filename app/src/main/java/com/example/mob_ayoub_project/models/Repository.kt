@@ -1,13 +1,20 @@
 package com.example.mob_ayoub_project.models
 
 import android.content.Context
+import androidx.compose.runtime.mutableStateOf
 import com.example.mob_ayoub_project.data.InfosFromOneRecipe
+import com.example.mob_ayoub_project.data.Recipe
 import com.example.mob_ayoub_project.database.FavoritesDatabase
 import com.example.mob_ayoub_project.database.RecipeFavorite
 
 object Repository {
 
     private var database: FavoritesDatabase? = null
+
+
+
+    //mettre toutes les données ici car on récupérera tout, il y a des choses à rajouter
+    //rajouter une variable pour la cuisine choisie
 
 
     fun initDatabase(context: Context) {
