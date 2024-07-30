@@ -2,7 +2,6 @@ package com.example.mob_ayoub_project
 
 import android.util.Log
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Image
 
 
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,14 +32,11 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import androidx.room.TypeConverters
 import com.example.mob_ayoub_project.data.Cuisine
 import com.example.mob_ayoub_project.data.InfosFromOneRecipe
-import com.example.mob_ayoub_project.data.Ingredients
 import com.example.mob_ayoub_project.data.Recipe
 import com.example.mob_ayoub_project.database.Converters
 import com.example.mob_ayoub_project.models.LoginViewModel
@@ -51,10 +47,7 @@ import com.example.mob_ayoub_project.ui.screens.recipes.CreateRecipeScreen
 import com.example.mob_ayoub_project.ui.screens.recipes.DisplayFavoritesRecipe
 import com.example.mob_ayoub_project.ui.screens.recipes.DisplayRecipeChoosed
 import com.example.mob_ayoub_project.ui.screens.recipes.SelectCuisineScreen
-import com.squareup.moshi.Moshi
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
-import java.net.URLEncoder
+
 
 @TypeConverters(Converters::class)
 
@@ -213,41 +206,38 @@ fun ControlApp(
                         cuisineChoosed = cuisineDecoded,  //ici je dois récupérer la cuisine passé en paramètre,
                         onRecipeChoosed = {recipe->
                             //faire la meme chose qu'en au passé le recipe en paramètre dans la nav
-                            val recipeString = converters.fromRecipe(recipe)
-                            navController.navigate("AyoubScreen.RecipeChoosed.name/$recipeString")
-                            Log.i("CUISINE_ENCODED", recipeString.toString())
+                            val recipeId = recipe.id
+                            navController.navigate("AyoubScreen.RecipeChoosed.name/$recipeId")
                         } )
                 }
             }
 
             //chemin pour voir la recette selectionnée + possibilité d'ajouter aux favoris
-            composable("AyoubScreen.RecipeChoosed.name/{recipeString}",
-                arguments = listOf(navArgument("recipeString"){type = NavType.StringType})
+            composable("AyoubScreen.RecipeChoosed.name/{recipeId}",
+                arguments = listOf(navArgument("recipeId"){type = NavType.IntType})
             ){backStackEntry->
 
                 currentScreen = AyoubScreen.RecipeChoosed
 
-                val  recipeString = backStackEntry.arguments?.getString("recipeString") ?: ""
-                val recipeDecoded = converters.toRecipe(recipeString)
+                val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
 
-                recipeViewModel.resultsInfosFromOneRecipe.value?.let { infosRecipeExist ->
-                    if (recipeDecoded != null) {
-                        DisplayRecipeChoosed(
-                            recipeChoosed = recipeDecoded,//ce qui sera envoyer avec le naviguate
-                            onButtonAddClicked = {theRecipeAddedInFavorits ->
-                                recipeViewModel.addFavoriteInTheDatabase(theRecipeAddedInFavorits)
-                            })
-                    }
-                }
+
+                DisplayRecipeChoosed(
+                    recipeId = recipeId,
+                   /* onButtonAddClicked = {theRecipeAddedInFavorits ->
+                        recipeViewModel.addFavoriteInTheDatabase(theRecipeAddedInFavorits)
+                    }*/
+                ) //ce qui sera envoyer avec le naviguate
 
             }
+
+
 
             //chemin pour voir quelles sont les recettes favorites
             composable(route=AyoubScreen.Favorites.name){
                 currentScreen = AyoubScreen.Favorites
 
                 DisplayFavoritesRecipe(
-                    favoritesList = recipeViewModel.favoritesList.value,
                     contentPadding = paddingValues,
                     modifier = Modifier.fillMaxWidth(),
                     onSelectionDeleted = { theRecipeToDelete->

@@ -12,20 +12,23 @@ import kotlinx.coroutines.launch
 
 class RecipeDetailsViewModel : ViewModel() {
 
-    var recipeChoosed = mutableStateOf<Recipe?>(null)
+    var recipeChoosedId: Int? = null
     var resultsInfosFromOneRecipe = mutableStateOf<InfosFromOneRecipe?>(null)
 
 
-    fun setRecipeChoosed(newRecipe: Recipe) {
-        recipeChoosed.value = newRecipe
+    fun setRecipeChoosedId(newRecipeId: Int) {
+        recipeChoosedId = newRecipeId;
     }
 
     fun fetchInfosFromRecipe() {
-        val idRecipeChoosed = recipeChoosed.value?.id
-        if (idRecipeChoosed != null) {
+        val currentRecipeId = recipeChoosedId
+        Log.i("ID : ", currentRecipeId.toString())
+        if (currentRecipeId != null) {
             viewModelScope.launch {
                 try {
-                    val responseForTheRecipe = RecipeService.recipeClient?.infosForOneRecipe(idRecipeChoosed, Utils.apiKeyRecipe)
+                    Log.i("ID : ", currentRecipeId.toString())
+
+                    val responseForTheRecipe = RecipeService.recipeClient?.infosForOneRecipe(currentRecipeId, Utils.apiKeyRecipe)
                     responseForTheRecipe?.let { response ->
                         resultsInfosFromOneRecipe.value = response
                         Log.i("INFOS SUR RECETTE", resultsInfosFromOneRecipe.toString())

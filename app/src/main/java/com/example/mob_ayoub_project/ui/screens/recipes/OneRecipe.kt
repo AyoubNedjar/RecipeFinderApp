@@ -14,8 +14,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,19 +40,27 @@ import com.example.mob_ayoub_project.data.InfosFromOneRecipe
 import com.example.mob_ayoub_project.data.Recipe
 import com.example.mob_ayoub_project.models.CuisineViewModel
 import com.example.mob_ayoub_project.models.RecipeDetailsViewModel
+import com.example.mob_ayoub_project.models.Repository
 
 
 @Composable
 fun DisplayRecipeChoosed(
-    recipeChoosed : Recipe,
-    onButtonAddClicked: (InfosFromOneRecipe) -> Unit = {}
+    recipeId: Int? = null,
+  //  onButtonAddClicked: (InfosFromOneRecipe) -> Unit = {}
 ) {
 //nouveau viewmodel
     //faire un init avec fetch
 
+    val snackbarHostState = remember { SnackbarHostState() }
     val recipeDetailsViewModel: RecipeDetailsViewModel = viewModel()
-    recipeDetailsViewModel.setRecipeChoosed(recipeChoosed)
-    recipeDetailsViewModel.fetchInfosFromRecipe()
+
+    LaunchedEffect(recipeId) {
+        if (recipeId != null) {
+            recipeDetailsViewModel.setRecipeChoosedId(recipeId)
+        }
+        recipeDetailsViewModel.fetchInfosFromRecipe()
+
+    }
 
     val scrollState = rememberScrollState()
 
@@ -140,7 +151,8 @@ fun DisplayRecipeChoosed(
         Button(
             onClick = {
                 recipeDetailsViewModel.resultsInfosFromOneRecipe.value?.let {
-                    onButtonAddClicked(it)
+                    //mettre à jour dans le repository
+                    Repository.updateCurrentFavoriteRecipe(it)
                 }
             },
             modifier = Modifier.align(Alignment.End)

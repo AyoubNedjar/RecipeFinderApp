@@ -14,12 +14,16 @@ class FavoriteViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
+            Repository.currentFavoriteRecipe.value?.let { addFavoriteInTheDatabase(it) }
             favoritesList.value = Repository.getAllFavoritesRecipe()
         }
     }
 
     fun addFavoriteInTheDatabase(recipe: InfosFromOneRecipe) {
         viewModelScope.launch {
+            if(favoritesList.value.any{it.title == recipe.title}){
+
+            }
             Repository.insertFavoriteInDatabase(recipe)
             // Here we don't need to create new methods to display and retrieve data because
             // it's assumed that they will be done directly once we have inserted a new note.

@@ -23,6 +23,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,20 +31,27 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.mob_ayoub_project.database.RecipeFavorite
+import com.example.mob_ayoub_project.models.FavoriteViewModel
+import com.example.mob_ayoub_project.models.RecipeDetailsViewModel
 
 
 @Composable
 fun DisplayFavoritesRecipe(
-    favoritesList: List<RecipeFavorite>,
     contentPadding: PaddingValues,
     onSelectionDeleted: (RecipeFavorite) -> Unit,
     onRecipeClickable: (RecipeFavorite) -> Unit,
     modifier: Modifier,
 ) {
+//faire passé la recette ajouté , l'ajoutée dans les recette favorites puis chrager toutes les
+    //recettes
 
-    if (favoritesList.isEmpty()) {
+    val favoritesViewModel: FavoriteViewModel = viewModel()
+
+
+    if (favoritesViewModel.favoritesList.value.isEmpty()) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -57,7 +65,7 @@ fun DisplayFavoritesRecipe(
         }
     } else {
         LazyColumn(modifier = modifier, contentPadding = contentPadding) {
-            items(items = favoritesList) { theRecipeFavorite ->
+            items(items = favoritesViewModel.favoritesList.value) { theRecipeFavorite ->
                 ColumnItem2(modifier, theRecipeFavorite, onSelectionDeleted, onRecipeClickable)
             }
         }
