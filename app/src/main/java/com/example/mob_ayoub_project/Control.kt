@@ -124,7 +124,7 @@ fun ControlApp(
         //container that uses composable for navigation
         NavHost(
             navController = navController,
-            startDestination = AyoubScreen.Cuisines.name,//voiur si on est loguer
+            startDestination = AyoubScreen.Cuisines.name,//voir si on est loguer avec condition
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)

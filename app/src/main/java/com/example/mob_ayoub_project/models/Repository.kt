@@ -1,6 +1,7 @@
 package com.example.mob_ayoub_project.models
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.example.mob_ayoub_project.data.InfosFromOneRecipe
@@ -28,6 +29,9 @@ object Repository {
     val messageSnackBar: StateFlow<String> get() = _messageSnackBar
 
 
+    //si pas de solution pour l ajout, ajouté la rectte dans le repository , ajouter une methode
+    //qui verifie si elle se trouve déja cela sans appeler le favoritemodelview et sans utiliser
+    //la variable de la liste du modelview
 
     fun initDatabase(context: Context) {
         if (database == null) {
@@ -37,9 +41,11 @@ object Repository {
 
 
     fun updateMessageSnackBar(message  :String){
-        
+        Log.i("Favorite recipe", "message snackbar")
+        _messageSnackBar.value = message
     }
     fun updateCurrentFavoriteRecipe(recipe: InfosFromOneRecipe?) {
+        Log.i("Recette favorite", "UPDATE RECIPE IN REPOSITORY : ")
         currentFavoriteRecipe.value = recipe
     }
     suspend fun insertFavoriteInDatabase(recipe: InfosFromOneRecipe) {

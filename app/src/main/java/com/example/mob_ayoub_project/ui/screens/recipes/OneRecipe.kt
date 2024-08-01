@@ -2,6 +2,7 @@ package com.example.mob_ayoub_project.ui.screens.recipes
 
 import android.text.Html
 import android.text.Spanned
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,10 +15,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,12 +58,20 @@ fun DisplayRecipeChoosed(
     val snackbarHostState = remember { SnackbarHostState() }
     val recipeDetailsViewModel: RecipeDetailsViewModel = viewModel()
 
+    val snackbarMessage by Repository.messageSnackBar.collectAsState()
+
     LaunchedEffect(recipeId) {
         if (recipeId != null) {
             recipeDetailsViewModel.setRecipeChoosedId(recipeId)
         }
         recipeDetailsViewModel.fetchInfosFromRecipe()
+    }
 
+    LaunchedEffect(snackbarMessage) {
+        if (snackbarMessage.isNotEmpty()) {//si il y a qqch déja
+            snackbarHostState.showSnackbar(snackbarMessage)
+            Repository.updateMessageSnackBar("") // Clear the message after showing it
+        }
     }
 
     val scrollState = rememberScrollState()
@@ -152,6 +164,7 @@ fun DisplayRecipeChoosed(
             onClick = {
                 recipeDetailsViewModel.resultsInfosFromOneRecipe.value?.let {
                     //mettre à jour dans le repository
+                    Log.i("Recette favorite" , "bouton ajouté cliqué")
                     Repository.updateCurrentFavoriteRecipe(it)
                 }
             },
@@ -160,6 +173,7 @@ fun DisplayRecipeChoosed(
             Text(text = "add Favorites")
         }
 
+        SnackbarHost(hostState = snackbarHostState)
     }
 
 
