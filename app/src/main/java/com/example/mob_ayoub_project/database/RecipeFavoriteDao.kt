@@ -18,6 +18,9 @@ interface RecipeFavoriteDao {
     @Query("SELECT * from RecipeFavorite")
     suspend fun getAllRecipe(): List<RecipeFavorite>
 
+    @Query("SELECT * from RecipeFavorite WHERE id = :recipeId")
+    suspend fun getRecipeById(recipeId: Int): RecipeFavorite?
+
     @Delete
     suspend fun removeFavorite(recipe : RecipeFavorite)
 }

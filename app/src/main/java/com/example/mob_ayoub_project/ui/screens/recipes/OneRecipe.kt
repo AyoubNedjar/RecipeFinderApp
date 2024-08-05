@@ -43,6 +43,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.mob_ayoub_project.data.InfosFromOneRecipe
 import com.example.mob_ayoub_project.data.Recipe
+import com.example.mob_ayoub_project.data.Utils
+import com.example.mob_ayoub_project.data.Utils.HtmlText
 import com.example.mob_ayoub_project.models.CuisineViewModel
 import com.example.mob_ayoub_project.models.RecipeDetailsViewModel
 import com.example.mob_ayoub_project.models.Repository
@@ -180,53 +182,3 @@ fun DisplayRecipeChoosed(
 
 }
 
-
-/**
- * to convert the html code in String
- */
-@Composable
-fun HtmlText(html: String) {
-    val spanned = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
-    val annotatedString = spanned.toAnnotatedString()
-
-    Text(
-        text = annotatedString,
-        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp)
-    )
-}
-
-fun Spanned.toAnnotatedString(): AnnotatedString {
-    return buildAnnotatedString {
-        append(this@toAnnotatedString.toString())
-        this@toAnnotatedString.getSpans(0, this@toAnnotatedString.length, Any::class.java)
-            .forEach { span ->
-                val start = this@toAnnotatedString.getSpanStart(span)
-                val end = this@toAnnotatedString.getSpanEnd(span)
-                when (span) {
-                    is android.text.style.StyleSpan -> {
-                        when (span.style) {
-                            android.graphics.Typeface.BOLD -> {
-                                addStyle(SpanStyle(fontWeight = FontWeight.Bold), start, end)
-                            }
-
-                            android.graphics.Typeface.ITALIC -> {
-                                addStyle(SpanStyle(fontStyle = FontStyle.Italic), start, end)
-                            }
-                        }
-                    }
-
-                    is android.text.style.URLSpan -> {
-                        addStringAnnotation("URL", span.url, start, end)
-                        withStyle(
-                            style = SpanStyle(
-                                color = Color.Blue,
-                                textDecoration = TextDecoration.Underline
-                            )
-                        ) {
-                            append(this@toAnnotatedString.subSequence(start, end))
-                        }
-                    }
-                }
-            }
-    }
-}

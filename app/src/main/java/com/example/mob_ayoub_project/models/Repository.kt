@@ -79,4 +79,11 @@ object Repository {
             updateMessageSnackBar("la recette ajouté ")
         }
     }
+
+    suspend fun getFavoriteRecipeById(recipeId: Int): RecipeFavorite? {
+        database?.let { thedatabase ->
+            return thedatabase.recipeFavoritesDao().getRecipeById(recipeId)
+        }
+        return null
+    }
 }

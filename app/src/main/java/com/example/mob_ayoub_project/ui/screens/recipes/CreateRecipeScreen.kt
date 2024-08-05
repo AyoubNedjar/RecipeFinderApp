@@ -15,12 +15,17 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,15 +33,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.mob_ayoub_project.data.InfosFromOneRecipe
 import com.example.mob_ayoub_project.data.Ingredients
+import com.example.mob_ayoub_project.models.CreateRecipeViewModel
+import com.example.mob_ayoub_project.models.Repository
+import kotlinx.coroutines.launch
 
 @Composable
 fun CreateRecipeScreen(
     modifier: Modifier,
-    onButtonClicked : (InfosFromOneRecipe) -> Unit = {}
  ) {
+        val createRecipeViewModel  : CreateRecipeViewModel = viewModel()
+
+        val snackbarHostState = remember { SnackbarHostState() }
+        val snackbarMessage by Repository.messageSnackBar.collectAsState()
+        val coroutineScope = rememberCoroutineScope()
 
         val scrollable = rememberScrollState()
 
@@ -48,8 +61,21 @@ fun CreateRecipeScreen(
 
         val imageUrl = "https://img-3.journaldesfemmes.fr/mrK-0E6Jw7lGJUv9Y0mpK5yfCMg=/1500x/smart/0a6c4b8084be4b9d91265bbe65a5ba93/ccmcms-jdf/11437802.png"
 
+
+
+        LaunchedEffect(snackbarMessage){
+            if (snackbarMessage.isNotEmpty()) {
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(snackbarMessage)
+                }
+                Repository.updateMessageSnackBar("") // Clear the message after showing it
+            }
+        }
+
         Column(
-            modifier = modifier.padding(16.dp).verticalScroll(scrollable),
+            modifier = modifier
+                .padding(16.dp)
+                .verticalScroll(scrollable),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
@@ -134,18 +160,14 @@ fun CreateRecipeScreen(
                 instructions,
                 ingredientValues
             )
+            SnackbarHost(hostState = snackbarHostState)
             Button(
-                onClick = {
-                    onButtonClicked(recipe)
-                          },
+                onClick = {createRecipeViewModel.addFavoriteOrNot(recipe)},//ajouter aux favorits
                 modifier= Modifier.align(Alignment.End)
                 ) {
                 Text(text = "add Favorites")
             }
-
         }
-
-
 }
 @Composable
 fun LabeledTextField(

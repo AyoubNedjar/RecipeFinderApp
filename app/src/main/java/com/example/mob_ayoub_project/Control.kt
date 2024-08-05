@@ -46,6 +46,7 @@ import com.example.mob_ayoub_project.ui.screens.recipes.AllRecipeFromCuisineScre
 import com.example.mob_ayoub_project.ui.screens.recipes.CreateRecipeScreen
 import com.example.mob_ayoub_project.ui.screens.recipes.DisplayFavoritesRecipe
 import com.example.mob_ayoub_project.ui.screens.recipes.DisplayRecipeChoosed
+import com.example.mob_ayoub_project.ui.screens.recipes.OneRecipeFromFavorite
 import com.example.mob_ayoub_project.ui.screens.recipes.SelectCuisineScreen
 
 
@@ -89,8 +90,6 @@ fun ControlApp(
 
     //stores de current Screen
     var currentScreen by remember { mutableStateOf(AyoubScreen.Start) }
-
-    var recipeChoosedFromFavorites  by remember { mutableStateOf(InfosFromOneRecipe()) }
 
     Scaffold (
 
@@ -182,8 +181,7 @@ fun ControlApp(
                     cuisines = Cuisine.values().toList(),
                     onSelectionChanged = {cuisine ->
                         //passer la cuisine en paramètre
-                        val cuisineString = converters.fromCuisine(cuisine)// rendre en string
-                        Log.i("CUISINE_ENCODED", cuisineString.toString())
+                        val cuisineString = converters.fromCuisine(cuisine)
                         navController.navigate("AyoubScreen.AllRecipe.name/$cuisineString")
                     }
                 )
@@ -195,17 +193,14 @@ fun ControlApp(
             ){backStackEntry->
 
                 currentScreen = AyoubScreen.AllRecipe
-                val  cuisineString = backStackEntry.arguments?.getString("cuisineString") ?: ""
-                Log.i("NAVIGATION", "Naviguation réussie  : "+cuisineString)
 
+                val  cuisineString = backStackEntry.arguments?.getString("cuisineString") ?: ""
                 val cuisineDecoded = converters.toCuisine(cuisineString)
-                Log.i("CUISINE_DECODED", cuisineDecoded.toString())
 
                 if (cuisineDecoded != null) {
                     AllRecipeFromCuisineScreen(
-                        cuisineChoosed = cuisineDecoded,  //ici je dois récupérer la cuisine passé en paramètre,
+                        cuisineChoosed = cuisineDecoded,
                         onRecipeChoosed = {recipe->
-                            //faire la meme chose qu'en au passé le recipe en paramètre dans la nav
                             val recipeId = recipe.id
                             navController.navigate("AyoubScreen.RecipeChoosed.name/$recipeId")
                         } )
@@ -218,16 +213,12 @@ fun ControlApp(
             ){backStackEntry->
 
                 currentScreen = AyoubScreen.RecipeChoosed
-
                 val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
 
                 DisplayRecipeChoosed(
                     recipeId = recipeId
                 )
-
             }
-
-
 
             //chemin pour voir quelles sont les recettes favorites
             composable(route=AyoubScreen.Favorites.name){
@@ -237,22 +228,11 @@ fun ControlApp(
                     contentPadding = paddingValues,
                     modifier = Modifier.fillMaxWidth(),
 
-                    /*
-                   When a recipe is clicked in the favorites, it should display
-                   the details of that recipe, so the DisplayRecipeChoosed function should be reused.
-                     */
-                    onRecipeClickable = {
-                        recipeClicked->
-                        recipeChoosedFromFavorites = InfosFromOneRecipe(
-                            image = recipeClicked.image,
-                            title = recipeClicked.title,
-                            veryHealthy = recipeClicked.veryHealthy,
-                            summary = recipeClicked.summary,
-                            instructions =recipeClicked.instructions,
-                            extendedIngredients = recipeClicked.extendedIngredients
-                        )
+                    onRecipeClickable = {recipeFavoriteChoosed ->
 
-                        navController.navigate(AyoubScreen.RecipeChoosedFromFavorits.name)
+                        val recipeIdDb = recipeFavoriteChoosed.id
+                        navController.navigate(
+                            "AyoubScreen.RecipeChoosedFromFavorits.name/$recipeIdDb")
                     }
 
                 )
@@ -260,20 +240,20 @@ fun ControlApp(
             }
 
             //Path to view the details of a recipe in the favorites
-            /*composable(route =AyoubScreen.RecipeChoosedFromFavorits.name){
+            composable("AyoubScreen.RecipeChoosedFromFavorits.name/{recipeIdDb}",
+                arguments = listOf(navArgument("recipeIdDb"){type = NavType.IntType})
+            ){backStackEntry->
+
                 currentScreen = AyoubScreen.RecipeChoosedFromFavorits
-                DisplayRecipeChoosed(recipe = recipeChoosedFromFavorites)
-            }*/
+                val recipeIdDb = backStackEntry.arguments?.getInt("recipeIdDb") ?: 0
+
+                OneRecipeFromFavorite(recipeIdDb = recipeIdDb)
+            }
 
             // Path to create your own recipe
             composable(route=AyoubScreen.CreateRecipe.name){
                 currentScreen = AyoubScreen.CreateRecipe
-                CreateRecipeScreen(
-                    modifier = Modifier,
-                    onButtonClicked = {theRecipeCreated ->
-                        recipeViewModel.addFavoriteInTheDatabase(theRecipeCreated)
-                        navController.navigate(AyoubScreen.Favorites.name)
-                    })
+                CreateRecipeScreen(modifier = Modifier)
 
             }
         }
@@ -299,6 +279,10 @@ fun BottomNavigationBar(navController: NavHostController, currentScreen: AyoubSc
                     navController.navigate(route = AyoubScreen.Cuisines.name)
                 }
             )
+
+            //
+            // ici placer la fonction pour la recherche
+            //
 
 
             BottomNavigationItem(
