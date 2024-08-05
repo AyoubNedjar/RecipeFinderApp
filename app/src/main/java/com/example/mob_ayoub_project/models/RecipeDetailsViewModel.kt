@@ -8,12 +8,15 @@ import com.example.mob_ayoub_project.data.InfosFromOneRecipe
 import com.example.mob_ayoub_project.data.Recipe
 import com.example.mob_ayoub_project.data.Utils
 import com.example.mob_ayoub_project.network.Recipe.RecipeService
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class RecipeDetailsViewModel : ViewModel() {
 
     var recipeChoosedId: Int? = null
     var resultsInfosFromOneRecipe = mutableStateOf<InfosFromOneRecipe?>(null)
+
 
 
     fun setRecipeChoosedId(newRecipeId: Int) {
@@ -39,6 +42,13 @@ class RecipeDetailsViewModel : ViewModel() {
             }
         } else {
             Log.e("recherche recette infos", "Recette ID est nulle")
+        }
+    }
+
+    fun addFavoriteOrNot(recipe: InfosFromOneRecipe){
+        viewModelScope.launch {
+            Log.i("Recette Favorite", "detailsViewModel")
+            Repository.addOrShowMessage(recipe)
         }
     }
 }

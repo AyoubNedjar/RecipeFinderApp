@@ -41,7 +41,6 @@ import com.example.mob_ayoub_project.models.RecipeDetailsViewModel
 @Composable
 fun DisplayFavoritesRecipe(
     contentPadding: PaddingValues,
-    onSelectionDeleted: (RecipeFavorite) -> Unit,
     onRecipeClickable: (RecipeFavorite) -> Unit,
     modifier: Modifier,
 ) {
@@ -66,7 +65,7 @@ fun DisplayFavoritesRecipe(
     } else {
         LazyColumn(modifier = modifier, contentPadding = contentPadding) {
             items(items = favoritesViewModel.favoritesList.value) { theRecipeFavorite ->
-                ColumnItem2(modifier, theRecipeFavorite, onSelectionDeleted, onRecipeClickable)
+                ColumnItem2(modifier,favoritesViewModel, theRecipeFavorite,onRecipeClickable)
             }
         }
     }
@@ -76,8 +75,8 @@ fun DisplayFavoritesRecipe(
 @Composable
 fun ColumnItem2(
     modifier: Modifier = Modifier,
+    viewModel : FavoriteViewModel,
     recipe: RecipeFavorite,
-    onSelectionDeleted: (RecipeFavorite) -> Unit,
     onRecipeClickable: (RecipeFavorite) -> Unit
 ) {
 
@@ -131,7 +130,7 @@ fun ColumnItem2(
                     modifier = Modifier
                         .size(24.dp)
                         .clickable {
-                            onSelectionDeleted(recipe)
+                            viewModel.deleteFavoriteFromTheDatabase(recipe)
                         }
 
                 )

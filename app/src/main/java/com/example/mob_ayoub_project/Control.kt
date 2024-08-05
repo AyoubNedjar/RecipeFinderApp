@@ -221,13 +221,9 @@ fun ControlApp(
 
                 val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
 
-
                 DisplayRecipeChoosed(
-                    recipeId = recipeId,
-                   /* onButtonAddClicked = {theRecipeAddedInFavorits ->
-                        recipeViewModel.addFavoriteInTheDatabase(theRecipeAddedInFavorits)
-                    }*/
-                ) //ce qui sera envoyer avec le naviguate
+                    recipeId = recipeId
+                )
 
             }
 
@@ -240,9 +236,6 @@ fun ControlApp(
                 DisplayFavoritesRecipe(
                     contentPadding = paddingValues,
                     modifier = Modifier.fillMaxWidth(),
-                    onSelectionDeleted = { theRecipeToDelete->
-                        recipeViewModel.deleteFavoriteFromTheDatabase(theRecipeToDelete)
-                    },
 
                     /*
                    When a recipe is clicked in the favorites, it should display
@@ -259,17 +252,16 @@ fun ControlApp(
                             extendedIngredients = recipeClicked.extendedIngredients
                         )
 
-                        //navController.navigate(AyoubScreen.RecipeChoosedFromFavorits.name)
+                        navController.navigate(AyoubScreen.RecipeChoosedFromFavorits.name)
                     }
 
                 )
 
             }
 
-            // Path to view the details of a recipe in the favorites
+            //Path to view the details of a recipe in the favorites
             /*composable(route =AyoubScreen.RecipeChoosedFromFavorits.name){
                 currentScreen = AyoubScreen.RecipeChoosedFromFavorits
-                Log.i("RECIPE_FAVORITS", recipeChoosedFromFavorites.toString())
                 DisplayRecipeChoosed(recipe = recipeChoosedFromFavorites)
             }*/
 

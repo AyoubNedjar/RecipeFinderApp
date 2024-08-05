@@ -23,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,20 +46,19 @@ import com.example.mob_ayoub_project.data.Recipe
 import com.example.mob_ayoub_project.models.CuisineViewModel
 import com.example.mob_ayoub_project.models.RecipeDetailsViewModel
 import com.example.mob_ayoub_project.models.Repository
+import kotlinx.coroutines.launch
 
 
 @Composable
 fun DisplayRecipeChoosed(
-    recipeId: Int? = null,
-  //  onButtonAddClicked: (InfosFromOneRecipe) -> Unit = {}
+    recipeId: Int? = null
 ) {
-//nouveau viewmodel
-    //faire un init avec fetch
 
     val snackbarHostState = remember { SnackbarHostState() }
     val recipeDetailsViewModel: RecipeDetailsViewModel = viewModel()
 
     val snackbarMessage by Repository.messageSnackBar.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(recipeId) {
         if (recipeId != null) {
@@ -68,8 +68,10 @@ fun DisplayRecipeChoosed(
     }
 
     LaunchedEffect(snackbarMessage) {
-        if (snackbarMessage.isNotEmpty()) {//si il y a qqch déja
-            snackbarHostState.showSnackbar(snackbarMessage)
+        if (snackbarMessage.isNotEmpty()) {
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(snackbarMessage)
+            }
             Repository.updateMessageSnackBar("") // Clear the message after showing it
         }
     }
@@ -102,7 +104,6 @@ fun DisplayRecipeChoosed(
                 modifier = Modifier.padding(vertical = 16.dp)
             )
         }
-
 
         Text(
             text = "Santé",
@@ -165,7 +166,7 @@ fun DisplayRecipeChoosed(
                 recipeDetailsViewModel.resultsInfosFromOneRecipe.value?.let {
                     //mettre à jour dans le repository
                     Log.i("Recette favorite" , "bouton ajouté cliqué")
-                    Repository.updateCurrentFavoriteRecipe(it)
+                    recipeDetailsViewModel.addFavoriteOrNot(it)
                 }
             },
             modifier = Modifier.align(Alignment.End)

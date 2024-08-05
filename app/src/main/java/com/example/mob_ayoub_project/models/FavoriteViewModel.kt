@@ -16,29 +16,13 @@ class FavoriteViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            Repository.currentFavoriteRecipe.value?.let { addFavoriteInTheDatabase(it) }
             favoritesList.value = Repository.getAllFavoritesRecipe()
         }
     }
 
-    fun addFavoriteInTheDatabase(recipe: InfosFromOneRecipe) {
-        viewModelScope.launch {
-            if(favoritesList.value.any{it.title == recipe.title}){
-                Repository.updateMessageSnackBar(R.string.alreadyFavorites.toString())
-                Log.i("Favorite recipe", "favoriteviewmodel existe déja ")
-            }else{
-                Log.i("Favorite recipe", "favoriteviewmodel premiere insertion ")
-                Repository.insertFavoriteInDatabase(recipe)
-                Log.i("Favorite recipe", "recette ajoutée")
 
-                Repository.updateMessageSnackBar(R.string.newFavorites.toString())
-
-            }
-            // Here we don't need to create new methods to display and retrieve data because
-            // it's assumed that they will be done directly once we have inserted a new note.
-            favoritesList.value = Repository.getAllFavoritesRecipe()
-        }
-    }
+    //fonction addFavirte a été supprimé car pas besoin de l uiliser quand on instancie cet ecran
+    // , on a juste besoin de supprimé une recette de cette écran
 
     fun deleteFavoriteFromTheDatabase(recipe: RecipeFavorite) {
         viewModelScope.launch {
