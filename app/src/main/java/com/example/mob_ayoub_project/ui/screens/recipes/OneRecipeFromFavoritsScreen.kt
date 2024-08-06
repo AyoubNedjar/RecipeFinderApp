@@ -38,7 +38,7 @@ import com.example.mob_ayoub_project.models.FavoriteOneRecipeDetailsViewModel
 @Composable
 fun OneRecipeFromFavorite(
     recipeIdDb : Int
-){
+) {
     Log.i("Id db from recipe : ", recipeIdDb.toString())
 
     val viewModel: FavoriteOneRecipeDetailsViewModel = viewModel()
@@ -58,25 +58,25 @@ fun OneRecipeFromFavorite(
             .padding(16.dp)
             .verticalScroll(scrollState)
     ) {
-            Image(
-                painter = rememberAsyncImagePainter(model = recipe?.image),
-                contentDescription = "Recipe Image",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(shape = RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
+        Image(
+            painter = rememberAsyncImagePainter(model = recipe?.image),
+            contentDescription = "Recipe Image",
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .clip(shape = RoundedCornerShape(8.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+
+        recipe?.title?.let {
+            Text(
+                text = it,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(vertical = 16.dp)
             )
         }
-
-            recipe?.title?.let {
-                Text(
-                    text = it,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 16.dp)
-                )
-            }
 
         Text(
             text = "Santé",
@@ -85,7 +85,7 @@ fun OneRecipeFromFavorite(
                 fontSize = 20.sp
             )
         )
-       recipe?.veryHealthy.let { isHealthy ->
+        recipe?.veryHealthy.let { isHealthy ->
             val healthIndicator = if (isHealthy == true) "Healthy" else "Not very healthy"
             Text(
                 text = healthIndicator,
@@ -113,7 +113,7 @@ fun OneRecipeFromFavorite(
                 fontSize = 20.sp
             )
         )
-     recipe?.extendedIngredients?.forEach { ingredient ->
+        recipe?.extendedIngredients?.forEach { ingredient ->
             Text(
                 text = "- ${ingredient.name}",
                 fontSize = 16.sp,
@@ -135,4 +135,5 @@ fun OneRecipeFromFavorite(
         Spacer(modifier = Modifier.height(30.dp))
 
     }
+}
 

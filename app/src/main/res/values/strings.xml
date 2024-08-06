@@ -8,6 +8,7 @@
     <string name="Favorites">theFavorites</string>
     <string name="recipeCreated">CreateRecipe</string>
     <string name="recipeChoosedFromFavorits">recipeChoosedFromFavorits</string>
+    <string name="Shearch">Shearch</string>
 
     <string name="alreadyFavorites">Recette déja dans les favorits</string>
     <string name="newFavorites">Recette ajoutée aux favorits</string>

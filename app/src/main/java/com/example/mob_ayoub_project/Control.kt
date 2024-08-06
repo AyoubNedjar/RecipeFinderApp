@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Search
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import androidx.room.TypeConverters
@@ -48,6 +49,7 @@ import com.example.mob_ayoub_project.ui.screens.recipes.DisplayFavoritesRecipe
 import com.example.mob_ayoub_project.ui.screens.recipes.DisplayRecipeChoosed
 import com.example.mob_ayoub_project.ui.screens.recipes.OneRecipeFromFavorite
 import com.example.mob_ayoub_project.ui.screens.recipes.SelectCuisineScreen
+import com.example.mob_ayoub_project.ui.screens.recipes.Shearch
 
 
 @TypeConverters(Converters::class)
@@ -63,7 +65,8 @@ enum class AyoubScreen(@StringRes val title: Int) {
     RecipeChoosed(R.string.theRecipe),
     Favorites(R.string.Favorites),
     CreateRecipe(R.string.recipeCreated),
-    RecipeChoosedFromFavorits(R.string.recipeChoosedFromFavorits)
+    RecipeChoosedFromFavorits(R.string.recipeChoosedFromFavorits),
+    Shearch(title = R.string.Shearch)
 }
 
 
@@ -101,7 +104,10 @@ fun ControlApp(
                  if(currentScreen != AyoubScreen.Start
                      && currentScreen != AyoubScreen.Favorites
                      && currentScreen != AyoubScreen.About
-                     && currentScreen != AyoubScreen.Cuisines){
+                     && currentScreen != AyoubScreen.Cuisines
+                     && currentScreen != AyoubScreen.Shearch
+                     && currentScreen != AyoubScreen.CreateRecipe
+                     ){
                      TopAppBar (
                          title = {},
                          navigationIcon = {
@@ -256,6 +262,10 @@ fun ControlApp(
                 CreateRecipeScreen(modifier = Modifier)
 
             }
+            composable(route=AyoubScreen.Shearch.name){
+                currentScreen = AyoubScreen.Shearch
+                Shearch()
+            }
         }
     }
 }
@@ -282,6 +292,18 @@ fun BottomNavigationBar(navController: NavHostController, currentScreen: AyoubSc
 
             //
             // ici placer la fonction pour la recherche
+            BottomNavigationItem(
+                icon = {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = "Recherche"
+                    )
+                },
+                selected = currentScreen == AyoubScreen.Shearch,
+                onClick = {
+                    navController.navigate(route = AyoubScreen.Shearch.name)
+                }
+            )
             //
 
 
