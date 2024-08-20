@@ -5,6 +5,7 @@ import android.text.Spanned
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -150,7 +152,6 @@ fun DisplayRecipeChoosed(
             )
         }
         Spacer(modifier = Modifier.height(15.dp))
-
         Text(
             text = "Instructions",
             style = TextStyle(
@@ -163,20 +164,26 @@ fun DisplayRecipeChoosed(
         }
         Spacer(modifier = Modifier.height(30.dp))
 
-        Button(
-            onClick = {
-                recipeDetailsViewModel.resultsInfosFromOneRecipe.value?.let {
-                    //mettre à jour dans le repository
-                    Log.i("Recette favorite" , "bouton ajouté cliqué")
-                    recipeDetailsViewModel.addFavoriteOrNot(it)
-                }
-            },
-            modifier = Modifier.align(Alignment.End)
-        ) {
+        Row {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.weight(1f))
+            Button(
+                    onClick = {
+                        recipeDetailsViewModel.resultsInfosFromOneRecipe.value?.let {
+                            //mettre à jour dans le repository
+                            Log.i("Recette favorite" , "bouton ajouté cliqué")
+                            recipeDetailsViewModel.addFavoriteOrNot(it)
+                        }
+                    }
+            ) {
+
             Text(text = "add Favorites")
+            }
         }
 
-        SnackbarHost(hostState = snackbarHostState)
+
+
     }
 
 

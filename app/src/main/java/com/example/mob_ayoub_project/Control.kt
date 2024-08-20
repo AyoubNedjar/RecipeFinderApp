@@ -217,12 +217,21 @@ fun ControlApp(
             composable("AyoubScreen.RecipeChoosed.name/{recipeId}",
                 arguments = listOf(navArgument("recipeId"){type = NavType.IntType})
             ){backStackEntry->
-
                 currentScreen = AyoubScreen.RecipeChoosed
                 val recipeId = backStackEntry.arguments?.getInt("recipeId") ?: 0
 
                 DisplayRecipeChoosed(
                     recipeId = recipeId
+                )
+            }
+
+            composable(route=AyoubScreen.Shearch.name){
+                currentScreen = AyoubScreen.Shearch
+                Shearch(
+                    onRecipeIdChoosed = {
+                        val recipeId  = it //the same name because same way
+                        navController.navigate("AyoubScreen.RecipeChoosed.name/$recipeId")
+                    }
                 )
             }
 
@@ -262,10 +271,7 @@ fun ControlApp(
                 CreateRecipeScreen(modifier = Modifier)
 
             }
-            composable(route=AyoubScreen.Shearch.name){
-                currentScreen = AyoubScreen.Shearch
-                Shearch()
-            }
+
         }
     }
 }

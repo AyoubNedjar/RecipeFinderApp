@@ -23,6 +23,7 @@ object Repository {
     private val _messageSnackBar = MutableStateFlow<String>("")
     val messageSnackBar: StateFlow<String> get() = _messageSnackBar
 
+
     fun initDatabase(context: Context) {
         if (database == null) {
             database = FavoritesDatabase.getInstance(context)
@@ -31,7 +32,6 @@ object Repository {
 
 
     fun updateMessageSnackBar(message  :String){
-        Log.i("Favorite recipe", "message snackbar")
         _messageSnackBar.value = message
     }
 
@@ -86,4 +86,12 @@ object Repository {
         }
         return null
     }
+
+    suspend fun showAlertForWifiOrNot(){
+        updateMessageSnackBar("")
+
+    }
+
+
+
 }

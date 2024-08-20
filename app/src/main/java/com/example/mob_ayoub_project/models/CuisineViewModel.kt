@@ -30,16 +30,13 @@ class CuisineViewModel  : ViewModel() {
                         RecipeService.recipeClient?.chooseCuisine(cuisine.name, Utils.apiKeyRecipe)
                     if (responseRecipes != null) {
                         allRecipesFromCuisine.value = responseRecipes.results
-                        Log.i("Recipe from Cuisine", allRecipesFromCuisine.toString())
-                    } else {
-                        Log.e("Recipe from Cuisine", "Reponse de la recectte est null")
                     }
-                } else {
-                    Log.e("Recipe from Cuisine", "Aucune cuisine sélectionnée")
                 }
             } catch (e: Exception) {
                 Log.e("Recipe from Cuisine", "La reception des recette n'a pas fonctionné")
                 Log.e("Recipe from Cuisine", e.message, e)
+                Log.i("debug", "etape1")
+                Repository.updateMessageSnackBar("No internet connection. Please check your Wi-Fi or cellular connection")
                 e.printStackTrace()
             }
         }

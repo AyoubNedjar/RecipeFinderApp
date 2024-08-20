@@ -22,7 +22,6 @@ object RecipeService {
             val retrofit: Retrofit = retrofitBuilder.build()
             recipeClient = retrofit.create(RecipeHTTPClient::class.java)
         } catch (e: Exception) {
-            Log.e("Recipe from cuisine", e.message, e)
             e.printStackTrace()
         }
     }

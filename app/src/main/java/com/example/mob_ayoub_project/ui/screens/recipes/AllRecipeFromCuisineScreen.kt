@@ -16,6 +16,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,7 +33,17 @@ import com.example.mob_ayoub_project.data.Cuisine
 import com.example.mob_ayoub_project.data.Recipe
 import com.example.mob_ayoub_project.models.CuisineViewModel
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
+import com.example.mob_ayoub_project.data.Utils.isNetworkAvailable
+import com.example.mob_ayoub_project.models.Repository
+import kotlinx.coroutines.launch
 
 @Composable
 fun AllRecipeFromCuisineScreen(
@@ -39,12 +52,41 @@ fun AllRecipeFromCuisineScreen(
 ) {
     //cet ecran va etre affiché une fois la cuisine choisie , il recherchera alors les recettes
     //et les affichera
+    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
     val cuisineViewModel: CuisineViewModel = viewModel()
+    val snackbarMessage by Repository.messageSnackBar.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
+    val currentMessage by rememberUpdatedState(snackbarMessage)//LaunchedEffect dispose toujours
+    // de la version la plus récente de snackbarMessage
+    // , garantissant ainsi que le bon message est toujours affiché dans le Snackbar
+
+
 
     LaunchedEffect(cuisineChoosed) {
+
         cuisineViewModel.setCuisine(cuisineChoosed)
         cuisineViewModel.fetchRecipesFromCuisine()
+        if (snackbarMessage.isNotEmpty()) {
+            coroutineScope.launch {
+                Log.i("debug", "etape 2")
+
+
+                snackbarHostState.showSnackbar(currentMessage)
+            }
+            Repository.updateMessageSnackBar("") // Clear the message after showing it
+        }
+
     }
+    LaunchedEffect(snackbarMessage) {
+        if (snackbarMessage.isNotEmpty()) {
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(snackbarMessage)
+            }
+            Repository.updateMessageSnackBar("") // Clear the message after showing it
+        }
+    }
+    SnackbarHost(hostState = snackbarHostState)
 
 
     LazyColumn() {
@@ -58,6 +100,7 @@ fun AllRecipeFromCuisineScreen(
                 })
         }
     }
+
 }
 
 /**
@@ -97,7 +140,9 @@ fun ColumnItem(modifier: Modifier, recipe: Recipe, onClick: () -> Unit) {
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(start = 5.dp)
                 )
+
             }
         }
     }
 }
+

@@ -4,6 +4,7 @@ import com.example.mob_ayoub_project.data.Cuisine
 import com.example.mob_ayoub_project.data.DataPerson
 import com.example.mob_ayoub_project.data.InfosFromOneRecipe
 import com.example.mob_ayoub_project.data.Recipe
+import com.example.mob_ayoub_project.data.RecipeSuggestion
 import com.example.mob_ayoub_project.network.login.TokenResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -33,6 +34,15 @@ interface RecipeHTTPClient {
     suspend fun infosForOneRecipe(
         @Path("recipeId") recipeId: Int,
         @Query("apiKey") apiKey : String): InfosFromOneRecipe
+
+
+    //ici la nouvelle fonction
+    @GET("recipes/autocomplete")
+    suspend fun autocompleteRecipes(
+        @Query("query") query: String,
+        @Query("number") number: Int,
+        @Query("apiKey") apiKey: String
+    ): List<RecipeSuggestion>
 
 
 }
