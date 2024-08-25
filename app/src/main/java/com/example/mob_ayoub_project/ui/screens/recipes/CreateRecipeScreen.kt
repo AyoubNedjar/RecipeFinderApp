@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,7 +39,6 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.mob_ayoub_project.data.InfosFromOneRecipe
 import com.example.mob_ayoub_project.data.Ingredients
 import com.example.mob_ayoub_project.models.CreateRecipeViewModel
-import com.example.mob_ayoub_project.models.Repository
 import kotlinx.coroutines.launch
 
 @Composable
@@ -46,6 +46,7 @@ fun CreateRecipeScreen(
     modifier: Modifier,
  ) {
         val createRecipeViewModel  : CreateRecipeViewModel = viewModel()
+         val context = LocalContext.current
 
         val snackbarHostState = remember { SnackbarHostState() }
         val snackbarMessage by Repository.messageSnackBar.collectAsState()
@@ -162,7 +163,7 @@ fun CreateRecipeScreen(
             )
             SnackbarHost(hostState = snackbarHostState)
             Button(
-                onClick = {createRecipeViewModel.addFavoriteOrNot(recipe)},//ajouter aux favorits
+                onClick = {createRecipeViewModel.addFavoriteOrNot(context, recipe)},//ajouter aux favorits
                 modifier= Modifier.align(Alignment.End)
                 ) {
                 Text(text = "add Favorites")

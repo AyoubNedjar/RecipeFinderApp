@@ -1,5 +1,6 @@
 package com.example.mob_ayoub_project.models
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -12,29 +13,26 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+// RecipeDetailsViewModel.kt
+
 class RecipeDetailsViewModel : ViewModel() {
 
     var recipeChoosedId: Int? = null
     var resultsInfosFromOneRecipe = mutableStateOf<InfosFromOneRecipe?>(null)
 
-
-
     fun setRecipeChoosedId(newRecipeId: Int) {
-        recipeChoosedId = newRecipeId;
+        recipeChoosedId = newRecipeId
     }
 
     fun fetchInfosFromRecipe() {
         val currentRecipeId = recipeChoosedId
-        Log.i("ID : ", currentRecipeId.toString())
         if (currentRecipeId != null) {
             viewModelScope.launch {
                 try {
-                    Log.i("ID : ", currentRecipeId.toString())
-
-                    val responseForTheRecipe = RecipeService.recipeClient?.infosForOneRecipe(currentRecipeId, Utils.apiKeyRecipe)
+                    val responseForTheRecipe = RecipeService.recipeClient?.infosForOneRecipe(
+                        currentRecipeId, Utils.apiKeyRecipe)
                     responseForTheRecipe?.let { response ->
                         resultsInfosFromOneRecipe.value = response
-                        Log.i("INFOS SUR RECETTE", resultsInfosFromOneRecipe.toString())
                     }
                 } catch (e: Exception) {
                     Log.e("recherche recette infos", "erreur produite : ${e.message}", e)
@@ -45,10 +43,13 @@ class RecipeDetailsViewModel : ViewModel() {
         }
     }
 
-    fun addFavoriteOrNot(recipe: InfosFromOneRecipe){
+    fun addFavoriteOrNot(context: Context, recipe: InfosFromOneRecipe) {
         viewModelScope.launch {
-            Log.i("Recette Favorite", "detailsViewModel")
-            Repository.addOrShowMessage(recipe)
+            Repository.addOrShowMessage(context, recipe)
         }
     }
 }
+
+
+
+

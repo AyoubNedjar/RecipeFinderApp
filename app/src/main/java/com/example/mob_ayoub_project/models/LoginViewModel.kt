@@ -44,16 +44,11 @@ class LoginViewModel : ViewModel() {
                 access_token = AuthService.authClient.authenticate(uiState.value)
 
                 if (access_token.access_token != null) {
-
                     _fetchResult.value = ConnectionResult.SUCCES
-                    Log.i("jeton d'acces  : ", access_token.toString())
-                    Log.i("resulat apres jeton d'acces : ", fetchResult.value.toString())
 
                 } else {
-
                     _fetchResult.value = ConnectionResult.ERROR
-                    Log.i("Resultat_Valeur", fetchResult.value.toString())
-                    Log.e("MainviewModel", "Le token d'accès est null ")
+
                 }
 
             } catch (httpException: HttpException) {
@@ -61,11 +56,9 @@ class LoginViewModel : ViewModel() {
 
             } catch (e: Exception) {
                 _fetchResult.value = ConnectionResult.ERROR
-                Log.e("MainviewModel", e.message, e)
             }
 
         }
-        Log.i("verif_resulat_thread_#Login.kt", fetchResult.value.toString())
 
     }
 
@@ -85,11 +78,6 @@ class LoginViewModel : ViewModel() {
             )
         }
     }
-
-    fun resetAll() {
-        _uiState.value = DataPerson()
-    }
-
 
     /**
      * Receives a string and verifies if it is in email format.

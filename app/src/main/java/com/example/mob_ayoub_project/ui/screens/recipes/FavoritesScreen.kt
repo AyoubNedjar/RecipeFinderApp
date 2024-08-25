@@ -44,11 +44,8 @@ fun DisplayFavoritesRecipe(
     onRecipeClickable: (RecipeFavorite) -> Unit,
     modifier: Modifier,
 ) {
-//faire passé la recette ajouté , l'ajoutée dans les recette favorites puis chrager toutes les
-    //recettes
 
     val favoritesViewModel: FavoriteViewModel = viewModel()
-
 
     if (favoritesViewModel.favoritesList.value.isEmpty()) {
         Column(

@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -49,7 +50,6 @@ import com.example.mob_ayoub_project.data.Utils
 import com.example.mob_ayoub_project.data.Utils.HtmlText
 import com.example.mob_ayoub_project.models.CuisineViewModel
 import com.example.mob_ayoub_project.models.RecipeDetailsViewModel
-import com.example.mob_ayoub_project.models.Repository
 import kotlinx.coroutines.launch
 
 
@@ -60,9 +60,11 @@ fun DisplayRecipeChoosed(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val recipeDetailsViewModel: RecipeDetailsViewModel = viewModel()
+    val context = LocalContext.current
 
     val snackbarMessage by Repository.messageSnackBar.collectAsState()
     val coroutineScope = rememberCoroutineScope()
+    val scrollState = rememberScrollState()
 
     LaunchedEffect(recipeId) {
         if (recipeId != null) {
@@ -79,8 +81,6 @@ fun DisplayRecipeChoosed(
             Repository.updateMessageSnackBar("") // Clear the message after showing it
         }
     }
-
-    val scrollState = rememberScrollState()
 
     Column(
         modifier = Modifier
@@ -171,9 +171,7 @@ fun DisplayRecipeChoosed(
             Button(
                     onClick = {
                         recipeDetailsViewModel.resultsInfosFromOneRecipe.value?.let {
-                            //mettre à jour dans le repository
-                            Log.i("Recette favorite" , "bouton ajouté cliqué")
-                            recipeDetailsViewModel.addFavoriteOrNot(it)
+                            recipeDetailsViewModel.addFavoriteOrNot(context, it)
                         }
                     }
             ) {

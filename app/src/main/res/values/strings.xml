@@ -12,6 +12,7 @@
 
     <string name="alreadyFavorites">Recette déja dans les favorits</string>
     <string name="newFavorites">Recette ajoutée aux favorits</string>
+    <string name="noConnect">Pas de connexion Internet , vérifiez votre wifi svp !</string>
 
 
 </resources>

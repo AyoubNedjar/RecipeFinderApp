@@ -42,7 +42,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import com.example.mob_ayoub_project.data.Utils.isNetworkAvailable
-import com.example.mob_ayoub_project.models.Repository
 import kotlinx.coroutines.launch
 
 @Composable
@@ -95,8 +94,7 @@ fun AllRecipeFromCuisineScreen(
                 modifier = Modifier,
                 recipe = recipe,
                 onClick = {
-                    onRecipeChoosed(recipe)// une fois cliqué on passera l'id de la recette lors de
-                    //la naviguation dans le Control.kt
+                    onRecipeChoosed(recipe)
                 })
         }
     }

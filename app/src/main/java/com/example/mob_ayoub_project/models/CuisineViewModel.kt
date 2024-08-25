@@ -1,5 +1,6 @@
 package com.example.mob_ayoub_project.models
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -33,11 +34,8 @@ class CuisineViewModel  : ViewModel() {
                     }
                 }
             } catch (e: Exception) {
-                Log.e("Recipe from Cuisine", "La reception des recette n'a pas fonctionné")
-                Log.e("Recipe from Cuisine", e.message, e)
-                Log.i("debug", "etape1")
-                Repository.updateMessageSnackBar("No internet connection. Please check your Wi-Fi or cellular connection")
-                e.printStackTrace()
+                Repository.updateMessageSnackBar("")
+
             }
         }
     }

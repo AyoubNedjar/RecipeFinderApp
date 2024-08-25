@@ -33,15 +33,13 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.MaterialTheme
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import androidx.room.TypeConverters
 import com.example.mob_ayoub_project.data.Cuisine
-import com.example.mob_ayoub_project.data.InfosFromOneRecipe
-import com.example.mob_ayoub_project.data.Recipe
 import com.example.mob_ayoub_project.database.Converters
 import com.example.mob_ayoub_project.models.LoginViewModel
-import com.example.mob_ayoub_project.models.RecipeViewModel
 import com.example.mob_ayoub_project.ui.screens.login.DisplayAboutUser
 import com.example.mob_ayoub_project.ui.screens.recipes.AllRecipeFromCuisineScreen
 import com.example.mob_ayoub_project.ui.screens.recipes.CreateRecipeScreen
@@ -78,19 +76,10 @@ enum class AyoubScreen(@StringRes val title: Int) {
  */
 @Composable
 fun ControlApp(
-    loginViewModel: LoginViewModel = viewModel(),
-    recipeViewModel : RecipeViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ){
 
     val converters = Converters()
-
-    val uiState by loginViewModel.uiState.collectAsState()
-    //collects values from view.uiState and wraps them in a state object
-
-    //stores the state of the variable and follow de updates
-    var emailError by remember { mutableStateOf("") }
-
     //stores de current Screen
     var currentScreen by remember { mutableStateOf(AyoubScreen.Start) }
 
@@ -129,7 +118,7 @@ fun ControlApp(
         //container that uses composable for navigation
         NavHost(
             navController = navController,
-            startDestination = AyoubScreen.Cuisines.name,//voir si on est loguer avec condition
+            startDestination = AyoubScreen.Start.name,//voir si on est loguer avec condition
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
@@ -140,37 +129,12 @@ fun ControlApp(
             composable(route = AyoubScreen.Start.name) {
                 currentScreen = AyoubScreen.Start
 
-                val fetchResult by loginViewModel.fetchResult.collectAsState()
-
                 StartConnection(
-                    email = uiState.email,
-                    emailChange = { loginViewModel.setEmail(it) },
-                    emailError = emailError,
-                    psw = uiState.password,
-                    pswChange = {
-                        loginViewModel.setPasswd(it)
-                    },
-                    onValidateClicked = {
-                        //code for check if email is valid
-                        if (!loginViewModel.validateEmail(uiState.email)) {
-                            emailError = "Adresse e-mail invalide"
-                            loginViewModel.resetAll()
-                        } else {
-                            Log.i("Email validé", uiState.email)
-                            loginViewModel.fetchUserInfos()
-
-                        }
-
+                    onNavigate = {
+                        navController.navigate(route = AyoubScreen.Cuisines.name)
                     }
-
                 )
 
-                if (fetchResult == LoginViewModel.ConnectionResult.SUCCES) {
-                    navController.navigate(AyoubScreen.Cuisines.name)
-                } else if (fetchResult == LoginViewModel.ConnectionResult.ERROR) {
-                    emailError = "Email ou mot de passe invalide"
-
-                }
             }
 
 
@@ -291,6 +255,8 @@ fun BottomNavigationBar(navController: NavHostController, currentScreen: AyoubSc
                     )
                 },
                 selected = currentScreen == AyoubScreen.Cuisines,
+                selectedContentColor = MaterialTheme.colorScheme.primary,
+                unselectedContentColor = MaterialTheme.colorScheme.onSurface,
                 onClick = {
                     navController.navigate(route = AyoubScreen.Cuisines.name)
                 }
@@ -306,6 +272,8 @@ fun BottomNavigationBar(navController: NavHostController, currentScreen: AyoubSc
                     )
                 },
                 selected = currentScreen == AyoubScreen.Shearch,
+                selectedContentColor = MaterialTheme.colorScheme.primary,
+                unselectedContentColor = MaterialTheme.colorScheme.onSurface,
                 onClick = {
                     navController.navigate(route = AyoubScreen.Shearch.name)
                 }
@@ -321,6 +289,8 @@ fun BottomNavigationBar(navController: NavHostController, currentScreen: AyoubSc
                     )
                 },
                 selected = currentScreen == AyoubScreen.Favorites,
+                selectedContentColor = MaterialTheme.colorScheme.primary,
+                unselectedContentColor = MaterialTheme.colorScheme.onSurface,
                 onClick = {
                     navController.navigate(route = AyoubScreen.Favorites.name)
                 }
@@ -334,6 +304,8 @@ fun BottomNavigationBar(navController: NavHostController, currentScreen: AyoubSc
                     )
                 },
                 selected = currentScreen == AyoubScreen.About,
+                selectedContentColor = MaterialTheme.colorScheme.primary,
+                unselectedContentColor = MaterialTheme.colorScheme.onSurface,
                 onClick = {
                     navController.navigate(AyoubScreen.About.name)
                 }
@@ -346,6 +318,8 @@ fun BottomNavigationBar(navController: NavHostController, currentScreen: AyoubSc
                     )
                 },
                 selected = currentScreen == AyoubScreen.CreateRecipe,
+                selectedContentColor = MaterialTheme.colorScheme.primary,
+                unselectedContentColor = MaterialTheme.colorScheme.onSurface,
                 onClick = {
                     navController.navigate(route = AyoubScreen.CreateRecipe.name)
                 }

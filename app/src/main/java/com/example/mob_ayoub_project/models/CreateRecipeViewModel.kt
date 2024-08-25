@@ -1,5 +1,6 @@
 package com.example.mob_ayoub_project.models
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,9 +9,9 @@ import kotlinx.coroutines.launch
 
 class CreateRecipeViewModel : ViewModel() {
 
-    fun addFavoriteOrNot(recipe: InfosFromOneRecipe){
+    fun addFavoriteOrNot(context: Context, recipe: InfosFromOneRecipe) {
         viewModelScope.launch {
-            Repository.addOrShowMessage(recipe)
+            Repository.addOrShowMessage(context, recipe)
         }
     }
 }
