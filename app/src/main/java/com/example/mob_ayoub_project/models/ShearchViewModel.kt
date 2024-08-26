@@ -12,12 +12,25 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class ShearchViewModel : ViewModel() {
-    //ici les methodes qui appelerons ls requetes
-    //exemple fetchResulsFromSheach
 
     private val _suggestions = MutableStateFlow<List<RecipeSuggestion>>(emptyList())
     val suggestions: StateFlow<List<RecipeSuggestion>> get() = _suggestions
 
+    /**
+     * Fetches recipe suggestions based on a query string.
+     *
+     * <p>This method is responsible for retrieving a list of recipe suggestions from the API
+     * based on the provided query string. It uses the `RecipeService` to initialize the client
+     * and make a network request to the `autocompleteRecipes` endpoint. The method runs within
+     * the `viewModelScope` coroutine, ensuring that the network request is performed asynchronously.
+     *
+     * <p>If the request is successful, the resulting list of recipe suggestions is stored in the
+     * `_suggestions` LiveData, making it available to the UI. If an exception occurs during the
+     * process, it is caught, but no specific error handling is implemented.
+     *
+     * @param query  The partial query string to search for matching recipes.
+     * @param number The maximum number of recipe suggestions to retrieve.
+     */
     fun fetchRecipeSuggestions(query: String, number: Int) {
         viewModelScope.launch {
             try {
@@ -32,7 +45,9 @@ class ShearchViewModel : ViewModel() {
                     _suggestions.value = it
                 }
             } catch (e: Exception) {
+                // Exception caught, but no action is taken.
             }
         }
     }
+
 }

@@ -49,16 +49,13 @@ fun AllRecipeFromCuisineScreen(
     cuisineChoosed : Cuisine,
     onRecipeChoosed: (Recipe) -> Unit = {},
 ) {
-    //cet ecran va etre affiché une fois la cuisine choisie , il recherchera alors les recettes
-    //et les affichera
-    val context = LocalContext.current
+
+
     val snackbarHostState = remember { SnackbarHostState() }
     val cuisineViewModel: CuisineViewModel = viewModel()
     val snackbarMessage by Repository.messageSnackBar.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val currentMessage by rememberUpdatedState(snackbarMessage)//LaunchedEffect dispose toujours
-    // de la version la plus récente de snackbarMessage
-    // , garantissant ainsi que le bon message est toujours affiché dans le Snackbar
 
 
 
@@ -68,7 +65,6 @@ fun AllRecipeFromCuisineScreen(
         cuisineViewModel.fetchRecipesFromCuisine()
         if (snackbarMessage.isNotEmpty()) {
             coroutineScope.launch {
-                Log.i("debug", "etape 2")
 
 
                 snackbarHostState.showSnackbar(currentMessage)

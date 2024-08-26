@@ -49,7 +49,6 @@ fun OneRecipeFromFavorite(
         viewModel.fetchRecipeById(recipeIdDb)
     }
 
-    Log.i("One Recipe favorite from favoris : ", recipe.toString())
     val scrollState = rememberScrollState()
 
     Column(

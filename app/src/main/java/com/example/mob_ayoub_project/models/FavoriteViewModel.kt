@@ -20,10 +20,6 @@ class FavoriteViewModel : ViewModel() {
         }
     }
 
-
-    //fonction addFavirte a été supprimé car pas besoin de l uiliser quand on instancie cet ecran
-    // , on a juste besoin de supprimé une recette de cette écran
-
     fun deleteFavoriteFromTheDatabase(recipe: RecipeFavorite) {
         viewModelScope.launch {
             Repository.removeFavoriteFromDatabase(recipe)

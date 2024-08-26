@@ -35,11 +35,11 @@ class RecipeDetailsViewModel : ViewModel() {
                         resultsInfosFromOneRecipe.value = response
                     }
                 } catch (e: Exception) {
-                    Log.e("recherche recette infos", "erreur produite : ${e.message}", e)
+                    Log.e("recipe info search", "error occurred: ${e.message}", e)
                 }
             }
         } else {
-            Log.e("recherche recette infos", "Recette ID est nulle")
+            Log.e("recipe info search", "Recipe ID is null")
         }
     }
 

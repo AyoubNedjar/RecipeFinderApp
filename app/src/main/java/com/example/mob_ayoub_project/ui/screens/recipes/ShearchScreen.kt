@@ -53,7 +53,6 @@ fun Shearch(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Barre de recherche avec icône
         OutlinedTextField(
             value = query.value,
             onValueChange = {
@@ -83,9 +82,7 @@ fun Shearch(
             )
         )
 
-        // Vérification si des suggestions sont disponibles
         if (suggestions.isNotEmpty()) {
-            // Liste des suggestions
             LazyColumn() {
                items(suggestions) {suggestion ->
                     Card(
@@ -121,7 +118,6 @@ fun Shearch(
                 }
             }
         } else {
-            // Message lorsque aucune suggestion n'est disponible
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center

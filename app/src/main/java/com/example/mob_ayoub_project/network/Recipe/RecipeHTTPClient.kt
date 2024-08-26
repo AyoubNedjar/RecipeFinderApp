@@ -36,13 +36,22 @@ interface RecipeHTTPClient {
         @Query("apiKey") apiKey : String): InfosFromOneRecipe
 
 
-    //ici la nouvelle fonction
+
+    /**
+     * Retrieves a list of recipe suggestions based on a partial query string.
+     *
+     * <p>This method calls the "recipes/autocomplete" endpoint to get a list of recipe suggestions
+     * that match the input query. The number of suggestions returned can be specified.
+     * It is commonly used for implementing an autocomplete feature in recipe search functionalities.
+     *
+     */
     @GET("recipes/autocomplete")
     suspend fun autocompleteRecipes(
         @Query("query") query: String,
         @Query("number") number: Int,
         @Query("apiKey") apiKey: String
     ): List<RecipeSuggestion>
+
 
 
 }

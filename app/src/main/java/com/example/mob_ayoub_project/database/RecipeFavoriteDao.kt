@@ -18,8 +18,18 @@ interface RecipeFavoriteDao {
     @Query("SELECT * from RecipeFavorite")
     suspend fun getAllRecipe(): List<RecipeFavorite>
 
+
+    /**
+     * Retrieves a favorite recipe from the database based on its unique ID.
+     *
+     * <p>This method executes a SQL query to fetch a recipe from the `RecipeFavorite` table
+     * that matches the specified ID. If a recipe with the given ID is found, it is returned;
+     * otherwise, `null` is returned. This can be used to check if a recipe is marked as a favorite
+     * by the user.
+     */
     @Query("SELECT * from RecipeFavorite WHERE id = :recipeId")
     suspend fun getRecipeById(recipeId: Int): RecipeFavorite?
+
 
     @Delete
     suspend fun removeFavorite(recipe : RecipeFavorite)
